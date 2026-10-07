@@ -487,7 +487,8 @@ struct hostent *gethostbyaddr(const void *address, socklen_t length, int family)
         return NULL;
     }
     memcpy(answer.bytes, address, length);
-    if (getnameinfo((struct sockaddr *)&storage, pw_sockaddr(&storage, &answer, 0), name, sizeof(name),
+    socklen_t storage_length = pw_sockaddr(&storage, &answer, 0);
+    if (getnameinfo((struct sockaddr *)&storage, storage_length, name, sizeof(name),
                     NULL, 0, NI_NAMEREQD)) {
         pw_h_errno = HOST_NOT_FOUND;
         return NULL;
