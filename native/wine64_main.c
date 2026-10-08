@@ -1127,13 +1127,21 @@ int main(int argc, char **argv)
         else if (words) PS5LOG_LOG("PW_WINE64 arguments words=%d line=%s", words, game->app.arguments);
     }
 
+    const char *app_root = runtime_roots[0];
     for (size_t i = 0; i < sizeof(runtime_roots) / sizeof(runtime_roots[0]); i++) {
         struct stat st;
         snprintf(ntdll_dir, sizeof(ntdll_dir), "%s" PW_WINE64_RUNTIME, runtime_roots[i]);
         snprintf(ntdll_path, sizeof(ntdll_path), "%s/ntdll.prx", ntdll_dir);
-        if (stat(ntdll_path, &st) == 0) break;
+        if (stat(ntdll_path, &st) == 0) {
+            app_root = runtime_roots[i];
+            break;
+        }
         PS5LOG_LOG("PW_WINE64 runtime not at %s", ntdll_dir);
     }
+    /* Where this process sees the title's files: once /data is granted /app0
+     * is gone, and the GPU driver reads sce_sys/param.json (whether the title
+     * may present at 119.88 Hz) through this instead. */
+    setenv("PS5_APP0", app_root, 1);
     PS5LOG_LOG("PW_WINE64 ntdll=%s prefix=%s exe=%s", config.ntdll_path, config.prefix,
                launch.executable);
     {
