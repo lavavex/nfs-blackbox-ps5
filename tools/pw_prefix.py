@@ -16,6 +16,10 @@ A push saves the manifest as it goes (every SAVE_EVERY_FILES files or
 SAVE_EVERY_BYTES bytes, and when interrupted), so a push that stops part way
 resumes where it stopped.
 
+Games whose profiles say the same `prefix = NAME` share one prefix (see
+tools/pw_install.py --prefix): pushing or pulling any of them syncs that
+prefix, LIBRARY/prefixes/NAME, with one manifest, LIBRARY/.pw/NAME.json.
+
 The console's prefix is the game's live state: games keep settings in the
 registry and saves beside themselves. A push refuses to overwrite a console
 prefix it does not know, or one whose registry changed since the last push
@@ -116,6 +120,22 @@ def to_console(key: str, data: bytes) -> bytes:
 
 def to_pc(key: str, data: bytes) -> bytes:
     return swap_cpu(key, data, CONSOLE_CPU, PC_CPU)
+
+
+def profile_prefix(profile: Path) -> str | None:
+    """The `prefix =` of a profile's [application] section, if it names one."""
+    if not profile.is_file():
+        return None
+    section = None
+    for line in profile.read_text(encoding="latin-1").splitlines():
+        line = line.split(";", 1)[0].strip()
+        if line.startswith("[") and line.endswith("]"):
+            section = line[1:-1].strip().lower()
+        elif section == "application" and "=" in line:
+            key, value = (part.strip() for part in line.split("=", 1))
+            if key.lower() == "prefix" and value and value != "default":
+                return value
+    return None
 
 
 class SyncError(Exception):
@@ -340,11 +360,12 @@ class Sync:
     def __init__(self, args: argparse.Namespace, remote=None):
         self.slug = args.slug
         self.library = Path(args.library).resolve()
-        self.prefix = self.library / "prefixes" / self.slug
         self.profile = self.library / "profiles" / f"{self.slug}.profile"
+        self.prefix_name = profile_prefix(self.profile) or self.slug
+        self.prefix = self.library / "prefixes" / self.prefix_name
         self.remote_root = args.remote.rstrip("/")
-        self.remote_prefix = f"{self.remote_root}/prefixes/{self.slug}"
-        self.manifest_path = self.library / ".pw" / f"{self.slug}.json"
+        self.remote_prefix = f"{self.remote_root}/prefixes/{self.prefix_name}"
+        self.manifest_path = self.library / ".pw" / f"{self.prefix_name}.json"
         self.manifest = json.loads(self.manifest_path.read_text()) if self.manifest_path.is_file() else None
         self.force, self.delete = args.force, getattr(args, "delete", False)
         self.trust_size = getattr(args, "trust_size", False)
@@ -364,7 +385,7 @@ class Sync:
 
     def save(self, files: dict[str, list]) -> None:
         self.manifest_path.parent.mkdir(parents=True, exist_ok=True)
-        self.manifest = {"slug": self.slug, "files": files}
+        self.manifest = {"slug": self.prefix_name, "files": files}
         # Replaced whole, so a push killed while saving keeps the last one.
         partial = self.manifest_path.with_name(self.manifest_path.name + ".tmp")
         partial.write_text(json.dumps(self.manifest, indent=1, sort_keys=True))
@@ -494,7 +515,7 @@ class Sync:
 
     def send_batch(self, batch: list[tuple[str, Path, list]], pushed: dict[str, list]) -> int:
         """Sends files through ps5upload, from a directory of links to them, and checks them over FTP."""
-        stage = self.library / ".pw" / "stage" / self.slug
+        stage = self.library / ".pw" / "stage" / self.prefix_name
         shutil.rmtree(stage, ignore_errors=True)
         size = sum(entry[0] for _, _, entry in batch)
         log(f"sending {len(batch)} files ({gib(size)}) through ps5upload")
@@ -578,7 +599,7 @@ class Sync:
                 local.unlink()  # the console's file, not what the link points to
             local.write_bytes(to_pc(key, data))
             return entry, True
-        partial = self.manifest_path.with_name(f"{self.slug}.pull")
+        partial = self.manifest_path.with_name(f"{self.prefix_name}.pull")
         partial.parent.mkdir(parents=True, exist_ok=True)
         try:
             with partial.open("wb") as out:

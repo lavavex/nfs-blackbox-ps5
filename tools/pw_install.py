@@ -13,7 +13,12 @@ pinned Wine instead of Lutris's own builds, and refuses any it does not
 implement rather than skipping them.
 
 Each game gets its own prefix, LIBRARY/prefixes/<slug>, which is $GAMEDIR,
-and a profile, LIBRARY/profiles/<slug>.profile, generated from the script's
+unless the script's `prospero: {prefix: NAME}` (or --prefix NAME) names a
+prefix several games share, LIBRARY/prefixes/NAME: the first game creates
+it, later ones install into it (their create_prefix task is skipped), so
+games that look for each other's saves or registry keys find them, as on a
+PC. Each game still has its own profile,
+LIBRARY/profiles/<slug>.profile, generated from the script's
 `game` section and a `prospero` block (ignored by Lutris) for what only the
 console needs: the desktop size, scaling and input. LIBRARY mirrors
 /data/prospero-win on the console.
@@ -284,7 +289,13 @@ class Installer:
         if not self.slug or not SLUG.match(self.slug):
             raise InstallError(f"the script's slug {self.slug!r} is not a profile id (use --slug)")
         self.library = Path(args.library).resolve()
-        self.gamedir = self.library / "prefixes" / self.slug
+        prospero = document.get("prospero") or self.script.get("prospero") or {}
+        self.prefix_name = getattr(args, "prefix", None) or prospero.get("prefix") or self.slug
+        if not SLUG.match(self.prefix_name):
+            raise InstallError(f"the prefix name {self.prefix_name!r} is not a valid name")
+        self.shared_prefix = self.prefix_name != self.slug
+        self.existing_prefix = False
+        self.gamedir = self.library / "prefixes" / self.prefix_name
         self.cache = self.library / ".cache" / self.slug
         # As given, not resolved: a build tree's wine is a symlink into
         # tools/wine, and its wineserver is server/wineserver beside it.
@@ -430,7 +441,9 @@ class Installer:
     def task(self, task: dict) -> None:
         name = task.get("name")
         env = self.wine_env(task)
-        if name == "create_prefix":
+        if name == "create_prefix" and self.existing_prefix:
+            log(f"create_prefix: installing into the existing shared prefix {self.prefix_name}")
+        elif name == "create_prefix":
             # As in Lutris, Gecko and Mono only when the script asks for them.
             # wineboot installs Gecko from Wine's download cache, where the
             # pinned packages are put first.
@@ -682,7 +695,7 @@ class Installer:
             lines.append(f"arguments = {self.expand(str(game['args']))}")
         if by_mode:
             lines.append("dll_overrides = " + ";".join(f"{','.join(dlls)}={mode}" for mode, dlls in by_mode.items()))
-        lines += [f"prefix = {self.slug}", "runtime = wine-wow64", f"architecture = {pe_architecture(exe)}",
+        lines += [f"prefix = {self.prefix_name}", "runtime = wine-wow64", f"architecture = {pe_architecture(exe)}",
                   f"graphics = {self.graphics_mode()}"]
         for section, keys in (("display", PROSPERO_DISPLAY), ("input", PROSPERO_INPUT)):
             values = [(key, prospero[section][key]) for key in keys if key in (prospero.get(section) or {})]
@@ -709,10 +722,17 @@ class Installer:
             self.mesa_files = mesa_provider(self.mesa_zink)
         elif self.mesa_zink:
             raise InstallError("--mesa-zink requires prospero.graphics=opengl")
-        if self.gamedir.exists():
+        profile = self.library / "profiles" / f"{self.slug}.profile"
+        if self.gamedir.exists() and not self.shared_prefix:
             raise InstallError(f"{self.gamedir} exists: remove it to reinstall {self.slug}")
+        if self.gamedir.exists():
+            if not (self.gamedir / "system.reg").is_file():
+                raise InstallError(f"{self.gamedir} exists but is not a prefix (no system.reg)")
+            if profile.exists():
+                raise InstallError(f"{profile} exists: {self.slug} is already installed in {self.prefix_name}")
+            self.existing_prefix = True
         self.resolve_files()
-        self.gamedir.mkdir(parents=True)
+        self.gamedir.mkdir(parents=True, exist_ok=True)
         for step in self.script.get("installer") or []:
             self.directive(step)
         if not (self.gamedir / "system.reg").is_file():
@@ -721,7 +741,6 @@ class Installer:
         self.unlink_home_folders(self.gamedir)
         dxvk_dlls = self.install_dxvk()
         self.install_mesa_zink()
-        profile = self.library / "profiles" / f"{self.slug}.profile"
         profile.parent.mkdir(parents=True, exist_ok=True)
         profile.write_text(self.profile(dxvk_dlls))
         subprocess.run([str(self.wineserver), "-w"], env=self.wine_env())
@@ -749,6 +768,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--library", required=True, help="the local mirror of /data/prospero-win")
     parser.add_argument("--wine", required=True, help="the pinned host Wine (build-wow64/wine)")
     parser.add_argument("--slug", help="the profile id, when the script has no game_slug")
+    parser.add_argument("--prefix", help="install into the shared prefix LIBRARY/prefixes/PREFIX "
+                        "(overrides the script's prospero.prefix)")
     parser.add_argument("--file", action="append", default=[], metavar="ID=PATH")
     parser.add_argument("--input", action="append", default=[], metavar="ID=VALUE")
     parser.add_argument("--mesa-zink", type=Path, help="validated local Mesa WGL/Zink artifact directory; requires graphics=opengl")

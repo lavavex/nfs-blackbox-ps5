@@ -386,6 +386,28 @@ def check_console_user(root: Path) -> None:
     assert not (console / REMOTE_PREFIX / "drive_c/users/prospero/AppData").exists()
 
 
+def check_shared_prefix(root: Path) -> None:
+    """Games whose profiles name one prefix push and pull that prefix, with one manifest."""
+    library, console, fast = new_game(root, "shared")
+    os.rename(library / "prefixes/game", library / "prefixes/series")
+    (library / "profiles/game.profile").write_text("[application]\nid = game\nprefix = series\n")
+    (library / "profiles/sequel.profile").write_text("; the next game\n[application]\nid = sequel\nprefix = series\n")
+    remote = DirRemote(console)
+    with contextlib.redirect_stdout(io.StringIO()):
+        assert pw_prefix.main(["push", "game", *fast], remote) == 0
+    assert (console / "data/prospero-win/prefixes/series" / GAME / "game.exe").read_bytes() == b"MZ game"
+    assert not (console / REMOTE_PREFIX).exists()
+    assert (library / ".pw/series.json").is_file() and not (library / ".pw/game.json").exists()
+    # The sequel shares the prefix and its manifest: no game file is sent again.
+    remote = DirRemote(console)
+    with contextlib.redirect_stdout(io.StringIO()):
+        assert pw_prefix.main(["push", "sequel", *fast], remote) == 0
+    assert not game_writes(remote)
+    listed = (console / "data/prospero-win/profiles/profiles.lst").read_text().split()
+    assert "game.profile" in listed and "sequel.profile" in listed
+    assert pw_prefix.profile_prefix(library / "profiles/missing.profile") is None
+
+
 def check_pull_home_links(root: Path) -> None:
     """A pull never writes through Wine's links into the PC's home: the
     folder becomes a real one in the prefix, as it is on the console."""
@@ -551,6 +573,7 @@ def main() -> int:
         check_ps5upload(root)
         check_console_user(root)
         check_pull_home_links(root)
+        check_shared_prefix(root)
     check_ftp_without_self()
     print("pw_prefix passed")
     return 0

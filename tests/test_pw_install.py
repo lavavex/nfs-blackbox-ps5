@@ -329,6 +329,27 @@ def main() -> int:
         assert "graphics = dxvk" in (library / "profiles" / "forced-dxvk.profile").read_text()
         assert (forced_prefix / "drive_c/windows/syswow64/d3d8.dll").read_bytes() == b"x32/d3d8"
 
+        # Games can share a prefix: the first creates it, the next installs
+        # into it without wineboot, and each profile names the shared prefix.
+        shared = [str(script), "--library", str(library), "--wine", str(wine),
+                  "--file", f"setup={setup}", "--prefix", "series"]
+        log.write_text("")
+        assert pw_install.main(shared + ["--slug", "series-one"]) == 0
+        series = library / "prefixes" / "series"
+        assert (series / "system.reg").is_file() and "wineboot --init" in log.read_text()
+        (series / "drive_c/users/prospero/Documents/save-one").write_text("one")
+        log.write_text("")
+        assert pw_install.main(shared + ["--slug", "series-two"]) == 0
+        assert "wineboot --init" not in log.read_text() and f"prefix={series}" in log.read_text()
+        assert (series / "drive_c/users/prospero/Documents/save-one").read_text() == "one"
+        for slug in ("series-one", "series-two"):
+            assert "prefix = series" in (library / "profiles" / f"{slug}.profile").read_text().splitlines()
+        assert not (library / "prefixes" / "series-two").exists()
+        # The same game twice is refused; so is a shared name that is not a prefix.
+        assert pw_install.main(shared + ["--slug", "series-two"]) == 1
+        (library / "prefixes" / "notaprefix").mkdir()
+        assert pw_install.main(shared[:-1] + ["notaprefix", "--slug", "series-three"]) == 1
+
         invalid_script = root / "invalid-graphics.yml"
         invalid_script.write_text(SCRIPT.replace("  display:", "  graphics: metal\n  display:", 1))
         assert pw_install.main([str(invalid_script), "--library", str(library), "--wine", str(wine),
