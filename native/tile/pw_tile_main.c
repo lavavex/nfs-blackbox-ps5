@@ -41,6 +41,21 @@ extern int sceUserServiceGetForegroundUser(int *user_id);
 extern int sceUserServiceGetLoginUserIdList(login_user_id_list_t *list);
 
 #define TILE_CONF "/app0/tile.conf"
+
+/* The ways of asking the console to start a title, in the order etaHEN and
+ * AirPSX use them (as ps5vkctl tries them). A table of pointers, kept even
+ * when the loop is unrolled: it gives the image the .data.rel.ro section
+ * ps5-native-tool requires. */
+enum tile_user { TILE_FOREGROUND, TILE_LOGIN };
+static const struct tile_attempt {
+    const char *name;
+    int (*call)(const char *, const char *[], lnc_app_param_t *);
+    enum tile_user user;
+} attempts[] __attribute__((used)) = {
+    { "lncUtil/foreground", sceLncUtilLaunchApp, TILE_FOREGROUND },
+    { "lncUtil/login", sceLncUtilLaunchApp, TILE_LOGIN },
+    { "systemService/login", sceSystemServiceLaunchApp, TILE_LOGIN },
+};
 #define TILE_LOG_DIR "/data/prospero-win/logs"
 
 static FILE *log_file;
@@ -101,23 +116,15 @@ int main(void)
     log_line("tile: start %s with %s home=1 (foreground user %d, login user %d)",
              target, word, foreground, login);
 
-    const struct {
-        const char *name;
-        int (*call)(const char *, const char *[], lnc_app_param_t *);
-        int user_id;
-    } attempts[] = {
-        { "lncUtil/foreground", sceLncUtilLaunchApp, foreground },
-        { "lncUtil/login", sceLncUtilLaunchApp, login },
-        { "systemService/login", sceSystemServiceLaunchApp, login },
-    };
     for (size_t i = 0; i < sizeof(attempts) / sizeof(attempts[0]); i++) {
-        if (attempts[i].user_id < 0) continue;
+        int user_id = attempts[i].user == TILE_FOREGROUND ? foreground : login;
+        if (user_id < 0) continue;
         lnc_app_param_t param;
         memset(&param, 0, sizeof(param));
         param.size = (uint32_t)sizeof(param);
-        param.user_id = attempts[i].user_id;
+        param.user_id = user_id;
         int rc = attempts[i].call(target, argv, &param);
-        log_line("tile: %s user %d -> 0x%08x", attempts[i].name, attempts[i].user_id, (unsigned)rc);
+        log_line("tile: %s user %d -> 0x%08x", attempts[i].name, user_id, (unsigned)rc);
         if (rc == 0) break;
     }
     if (log_file) fclose(log_file);
