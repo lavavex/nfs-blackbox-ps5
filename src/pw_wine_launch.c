@@ -46,6 +46,7 @@ int pw_wine_launch_parse(int argc, char *const *argv, const PwWineApp *apps, siz
         if ((value = value_of(word, "profile"))) profile = value;
         else if ((value = value_of(word, "path"))) path = value;
         else if ((value = value_of(word, "cycle")) && parse_count(value, &out->cycle)) out->cycle = 0;
+        else if ((value = value_of(word, "home"))) out->home = !strcmp(value, "1");
     }
     if (profile) {
         for (size_t i = 0; i < count && !out->app; i++)

@@ -29,6 +29,8 @@ static void test_parse(void)
     char *lower[] = { "path=c:\\x.exe", "noise", "cycle=12x" };
     char *launcher[] = { "launcher=1", "cycle=4294967295" };
     char *overflow[] = { "cycle=4294967296" };
+    char *tile[] = { "profile=pinball", "home=1" };
+    char *not_home[] = { "profile=pinball", "home=yes" };
     char *nulls[] = { NULL, "profile=notepad" };
     char long_path[PW_WINE_LAUNCH_PATH_MAX + 8] = "path=C:\\";
     char *too_long[] = { long_path };
@@ -55,6 +57,13 @@ static void test_parse(void)
     assert(l.mode == PW_WINE_LAUNCH_LAUNCHER && l.cycle == 4294967295u);
     l = parse(1, overflow);
     assert(!l.cycle);
+    /* A game's own tile asks to close to Home; nothing else does. */
+    l = parse(2, tile);
+    assert(l.mode == PW_WINE_LAUNCH_GAME && l.app == &apps[0] && l.home);
+    l = parse(2, not_home);
+    assert(l.mode == PW_WINE_LAUNCH_GAME && !l.home);
+    l = parse(2, profile);
+    assert(!l.home);
 
     /* Refusals fall back to the launcher and say so. */
     l = parse(1, unknown);

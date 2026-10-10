@@ -604,13 +604,20 @@ static PwWineLaunch launch;
 
 /* Replace this process with the title again: app's game, or the launcher
  * when app is NULL. /app0 is not visible once /data is granted, so the
- * sandbox's view of the same eboot is tried next. Returns only on failure. */
+ * sandbox's view of the same eboot is tried next. Returns only on failure.
+ * A game started from its own Home-screen tile (home=1) closes to Home
+ * instead of going to the launcher. */
 static void restart_title(const PwWineApp *app, uint32_t cycle, const char *reason)
 {
     static const char *const eboots[] = { "/app0/eboot.bin", PW_SANDBOX_APP0 "/eboot.bin" };
     static char storage[2 * PW_WINE_LAUNCH_PATH_MAX + 64];
     char *next[PW_WINE_LAUNCH_ARGS];
 
+    if (!app && launch.home) {
+        PS5LOG_LOG("PW_WINE64 close to=home reason=%s (started from the game's tile)", reason);
+        pw_diagnostics_close(reason);
+        _exit(0);
+    }
     if (!pw_wine_launch_argv(app, cycle, storage, sizeof(storage), next, PW_WINE_LAUNCH_ARGS)) {
         PS5LOG_LOG("PW_WINE64 restart refused: arguments do not fit");
         return;

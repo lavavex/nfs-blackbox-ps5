@@ -10,7 +10,11 @@
  *   profile=<id>   a game from the title's catalog;
  *   path=<exe>     an absolute Windows path, run directly (overrides the
  *                  profile's executable);
- *   cycle=<n>      open/close cycles completed, for unattended validation.
+ *   cycle=<n>      open/close cycles completed, for unattended validation;
+ *   home=1         started from a game's own Home-screen tile (another title
+ *                  that launches this one with the game's profile): when the
+ *                  game ends, the title closes to Home instead of restarting
+ *                  into the launcher.
  * With neither profile nor path the title shows the launcher, as when the
  * system starts it (argc 1, empty argv[0]).
  */
@@ -33,6 +37,7 @@ typedef struct PwWineLaunch {
     const PwWineApp *app;                         /* NULL for a bare path= */
     char executable[PW_WINE_LAUNCH_PATH_MAX];     /* GAME: what Wine runs */
     uint32_t cycle;
+    unsigned home;      /* home=1: close to Home when the game ends */
     unsigned refused;   /* an unknown profile or an invalid path: shown in the launcher */
 } PwWineLaunch;
 
