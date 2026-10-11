@@ -56,7 +56,17 @@
 #include <time.h>
 #include <unistd.h>
 
+/* The title this eboot is built for (tools/build_native.sh, PW_TITLE_ID):
+ * PPSA99995 is prospero-win itself; a game's own app (tools/build_game_app.sh)
+ * has its own id, Lapy helper and sandbox path. */
+#ifndef PW_TITLE_ID
 #define PW_TITLE_ID "PPSA99995"
+#endif
+/* A game's own app starts that profile when the system starts it with no
+ * game, and closes to Home when the game ends; empty for prospero-win. */
+#ifndef PW_AUTOSTART_PROFILE
+#define PW_AUTOSTART_PROFILE ""
+#endif
 #define PW_APP_NAME "prospero-win-wine64"
 
 /* Where the title's Wine runtime can be seen: /app0 inside the sandbox;
@@ -973,6 +983,17 @@ int main(int argc, char **argv)
         return 1;
     }
     (void)pw_wine_launch_parse(argc, argv, catalog, catalog_count, &launch);
+    static const char autostart_profile[] = PW_AUTOSTART_PROFILE;
+    if (launch.mode != PW_WINE_LAUNCH_GAME && !launch.refused && autostart_profile[0] != '\0') {
+        static char autostart_word[] = "profile=" PW_AUTOSTART_PROFILE;
+        static char home_word[] = "home=1";
+        char *autostart[] = { autostart_word, home_word };
+        uint32_t cycle = launch.cycle;
+        (void)pw_wine_launch_parse(2, autostart, catalog, catalog_count, &launch);
+        launch.cycle = cycle;
+        PS5LOG_LOG("PW_WINE64 autostart profile=%s mode=%s", PW_AUTOSTART_PROFILE,
+                   launch.mode == PW_WINE_LAUNCH_GAME ? "game" : "launcher");
+    }
     (void)pw_diagnostics_open(library_root, PW_BUILD_ID,
                               launch.app ? launch.app->id : "launcher", launch.cycle);
     PS5LOG_LOG("PW_WINE64 args argc=%d mode=%s profile=%s cycle=%u refused=%u", argc,

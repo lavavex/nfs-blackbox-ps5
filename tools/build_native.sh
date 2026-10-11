@@ -39,7 +39,14 @@ wine64_script=${PW_WINE64_SCRIPT:-0}
 wine64_seconds=${PW_WINE64_SECONDS:-0}
 wine64_cycles=${PW_WINE64_SCRIPT_CYCLES:-2}
 wine64_watchdog=${PW_WINE64_WAIT_WATCHDOG:-0}
-title_id=PPSA99995
+# A game's own app (tools/build_game_app.sh) builds the same title under its own
+# id, starting one profile: PW_TITLE_ID, PW_AUTOSTART_PROFILE, and PW_LAPY_DIR,
+# a Lapy helper built for that id (lapy.elf, lapy-manifest.json, release.json).
+title_id=${PW_TITLE_ID:-PPSA99995}
+autostart_profile=${PW_AUTOSTART_PROFILE:-}
+[[ $title_id =~ ^[A-Z]{4}[0-9]{5}$ ]] || { echo "PW_TITLE_ID must look like PPSA99995" >&2; exit 2; }
+[[ $autostart_profile =~ ^[A-Za-z0-9_.-]*$ ]] || {
+    echo "PW_AUTOSTART_PROFILE must be a profile id" >&2; exit 2; }
 
 [[ $native_mode == wine64 ]] || {
     echo "PW_NATIVE_MODE must be wine64: the direct Win32 runtime was removed" >&2; exit 2; }
@@ -55,9 +62,15 @@ title_id=PPSA99995
 }
 helper_download=$(mktemp -d "${TMPDIR:-/tmp}/prospero-lapy-helper.XXXXXX")
 trap 'rm -rf -- "$helper_download"' EXIT
+if [[ -n ${PW_LAPY_DIR:-} ]]; then
+    for asset in lapy.elf lapy-manifest.json release.json; do
+        cp "$PW_LAPY_DIR/$asset" "$helper_download/$asset"
+    done
+else
 python3 "$root/tools/fetch_lapy_helper.py" \
     --repo mpereiraesaa/PS5-Lapy-JB-Daemon --tag "$lapy_release" \
     --sha256 "$lapy_elf_sha256" --out "$helper_download"
+fi
 lapy_helper_elf="$helper_download/lapy.elf"
 helper_magic=$(od -An -tx1 -N4 "$lapy_helper_elf" | tr -d ' \n')
 [[ $helper_magic == 7f454c46 ]] || {
@@ -150,7 +163,8 @@ common=(-DPW_BUILD_ID=\""$build_id"\" -O2 -Wall -Wextra -Werror -ffunction-secti
         -I"$root/include" -I"$root/src" -I"$root/native"
         -I"$root/native/ps5log"
         -DPW_WINE64_SCRIPT="$wine64_script" -DPW_WINE64_SECONDS="$wine64_seconds"
-        -DPW_WINE64_SCRIPT_CYCLES="$wine64_cycles" -DPW_WINE64_WAIT_WATCHDOG="$wine64_watchdog")
+        -DPW_WINE64_SCRIPT_CYCLES="$wine64_cycles" -DPW_WINE64_WAIT_WATCHDOG="$wine64_watchdog"
+        -DPW_TITLE_ID=\""$title_id"\" -DPW_AUTOSTART_PROFILE=\""$autostart_profile"\")
 
 sources=(
     native/wine64_main.c native/pw_diagnostics.c native/pw_audio_ps5.c native/pw_pad_ps5.c native/pw_agc_ps5.c
