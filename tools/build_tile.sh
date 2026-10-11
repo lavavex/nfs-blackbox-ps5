@@ -8,7 +8,8 @@
 #   tools/build_tile.sh --title-id PPSA99996 --name "NFS Most Wanted" \
 #       --profile nfs-most-wanted-2005 [--icon art.png] [--target PPSA99995] \
 #       --out ../release-main/tiles
-# writes OUT/<title-id>/ (eboot.bin, sce_sys/, sce_module/libc.prx, tile.conf);
+# writes OUT/<title-id>/ (eboot.bin, sce_sys/, sce_module/libc.prx, tile.conf,
+# tile-launch.elf: the payload that starts the game, native/tile/pw_tile_launch.c);
 # deploy it like the app folder (/data/homebrew/<title-id>). The icon must be
 # 512x512; without --icon a plain one with the name is drawn.
 set -euo pipefail
@@ -55,9 +56,14 @@ mkdir -p "$build" "$app/sce_sys" "$app/sce_module"
     --stub-dir "$sdk/target/lib" --module-sdk 0x02000009 \
     --companion-sdk 0x08050001 --file-name eboot.elf
 "$tool" self --sign --in "$build/eboot.elf" --out "$app/eboot.bin" --magic 0x1D3D154F
+# The payload: built as any PS5 payload is (PS5_Vulkan's ps5vkctl), sent by the tile
+# to the console's payload loader, which can start another title where a sandboxed
+# app cannot.
+PS5_PAYLOAD_SDK="$sdk" "$sdk/bin/prospero-clang" -std=c11 -O2 -Wall -Wextra -Werror \
+    -o "$app/tile-launch.elf" "$root/native/tile/pw_tile_launch.c" -lSceSystemService -lSceUserService
 cp "$foundation/runtime/libc.prx" "$app/sce_module/libc.prx"
 chmod 755 "$app/eboot.bin" "$app/sce_module/libc.prx"
-printf 'profile=%s\ntarget=%s\n' "$profile" "$target" > "$app/tile.conf"
+printf 'profile=%s\ntarget=%s\ntile=%s\n' "$profile" "$target" "$title_id" > "$app/tile.conf"
 
 python3 - "$root/sce_sys/param.json" "$app/sce_sys/param.json" "$title_id" "$name" "$profile" <<'PY'
 import json, re, sys
