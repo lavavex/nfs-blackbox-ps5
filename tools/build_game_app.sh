@@ -94,9 +94,9 @@ if [[ -n $background ]]; then
     python3 -c 'import struct,sys; d=open(sys.argv[1],"rb").read(26); assert d[:8]==b"\x89PNG\r\n\x1a\n" and struct.unpack(">II",d[16:24])==(3840,2160) and d[25]==2, "background must be a 3840x2160 RGB PNG"' "$background"
     cp "$background" "$app/sce_sys/pic0.png"
     assets=${PS5_ASSETS_TOOL:-$root/../ps5-vulkan-mp/tools/prepare-assets.sh}
-    [[ -x $assets ]] || { echo "build_game_app: no $assets (ps5-vulkan-mp)" >&2; exit 2; }
+    [[ -f $assets ]] || { echo "build_game_app: no $assets (ps5-vulkan-mp)" >&2; exit 2; }
     textures=$(mktemp -d)
-    "$assets" --background "$background" --output-directory "$textures" ||
+    bash "$assets" --background "$background" --output-directory "$textures" ||
         { echo "build_game_app: background conversion failed (make -C ../ps5-vulkan-mp assets-deps?)" >&2; exit 2; }
     cp "$textures/pic0.dds" "$textures/pic1.dds" "$app/sce_sys/"
     rm -rf -- "$textures"
