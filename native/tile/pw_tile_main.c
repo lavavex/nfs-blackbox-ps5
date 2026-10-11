@@ -34,6 +34,7 @@ int sceNetSetsockopt(int, int, int, const void *, socklen_t);
 int sceNetShutdown(int, int);
 int sceNetSocket(const char *, int, int, int);
 int sceNetSocketClose(int);
+int sceSystemServiceLoadExec(const char *path, char *const argv[]);
 
 #define TILE_LOADER_PORT 9021
 #define TILE_TIMEOUT_US 5000000
@@ -152,6 +153,9 @@ int main(void)
     log_line("tile: %s asks for %s profile=%s home=1", tile, target, profile);
     if (send_payload() != 0) unlink(tile_paths[TILE_REQUEST]);
     if (log_file) fclose(log_file);
-    /* Closing hands the console back; the payload starts the game. */
+    /* Close the way a title does (returning from main ends in a system call
+     * the sandbox refuses: SIGSYS); the payload starts the game once the
+     * tile is gone. */
+    sceSystemServiceLoadExec("exit", NULL);
     return 0;
 }

@@ -120,16 +120,26 @@ int main(void)
         { "lncUtil/login", sceLncUtilLaunchApp, login },
         { "systemService/login", sceSystemServiceLaunchApp, login },
     };
-    for (size_t i = 0; i < sizeof(attempts) / sizeof(attempts[0]); i++) {
-        if (attempts[i].user_id < 0) continue;
-        lnc_app_param_t param;
-        memset(&param, 0, sizeof(param));
-        param.size = (uint32_t)sizeof(param);
-        param.user_id = attempts[i].user_id;
-        int rc = attempts[i].call(target, argv, &param);
-        log_line("payload: %s user %d -> 0x%08x", attempts[i].name, attempts[i].user_id, (unsigned)rc);
-        if (rc == 0) break;
+    /* While the tile's sandbox is still being removed, ShadowMount+ cannot
+     * mount the target ("launch mount unavailable: Device busy") and the
+     * launch is refused (0x80940033): give it a moment, then keep asking. */
+    usleep(1500000);
+    int started = 0;
+    for (int round = 1; round <= 15 && !started; round++) {
+        for (size_t i = 0; i < sizeof(attempts) / sizeof(attempts[0]) && !started; i++) {
+            if (attempts[i].user_id < 0) continue;
+            lnc_app_param_t param;
+            memset(&param, 0, sizeof(param));
+            param.size = (uint32_t)sizeof(param);
+            param.user_id = attempts[i].user_id;
+            int rc = attempts[i].call(target, argv, &param);
+            log_line("payload: round %d %s user %d -> 0x%08x", round, attempts[i].name,
+                     attempts[i].user_id, (unsigned)rc);
+            started = rc == 0;
+        }
+        if (!started) usleep(1000000);
     }
+    log_line("payload: %s", started ? "started" : "gave up");
     if (log_file) fclose(log_file);
     return 0;
 }
