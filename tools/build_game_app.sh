@@ -96,6 +96,7 @@ if [[ -n $background ]]; then
     assets=${PS5_ASSETS_TOOL:-$root/../ps5-vulkan-mp/tools/prepare-assets.sh}
     [[ -f $assets ]] || { echo "build_game_app: no $assets (ps5-vulkan-mp)" >&2; exit 2; }
     textures=$(mktemp -d)
+    cp "$app/sce_sys/icon0.png" "$textures/"   # the tool validates its folder as a whole sce_sys
     bash "$assets" --background "$background" --output-directory "$textures" ||
         { echo "build_game_app: background conversion failed (make -C ../ps5-vulkan-mp assets-deps?)" >&2; exit 2; }
     cp "$textures/pic0.dds" "$textures/pic1.dds" "$app/sce_sys/"
