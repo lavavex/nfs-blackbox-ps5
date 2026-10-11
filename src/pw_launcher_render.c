@@ -257,7 +257,7 @@ static void taskbar(const Canvas *c,const char *status)
         for(int32_t i=0;i<bw;i++)if(!cut(i+30,j,bw+30,bh,30))put(c,i,TASKBAR_Y+6+j,color);
     }
     text(c,(bw-text_width("Play",6))/2,TASKBAR_Y+6+(bh-42)/2,"Play",6,rgb(0xff,0xff,0xff),bw);
-    int32_t hints=text(c,bw+48,TASKBAR_Y+30,"Cross: launch   Options+Create (hold): close",3,
+    int32_t hints=text(c,bw+48,TASKBAR_Y+30,"Cross: launch   Options+Touchpad (hold): close",3,
                        rgb(0xff,0xff,0xff),W-bw-96);
     if(status && *status) {
         int32_t tray=W-(bw+48+hints+48);

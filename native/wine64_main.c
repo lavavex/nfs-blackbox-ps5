@@ -5,7 +5,7 @@
  * The title runs one game per process (src/pw_wine_launch.h). Started with
  * no game it shows the launcher, without loading Wine; choosing a game
  * restarts the title with sceSystemServiceLoadExec and the game's
- * arguments. Holding Options+Create in a game sends it Alt+F4; when Wine
+ * arguments. Holding Options+Touchpad in a game sends it Alt+F4; when Wine
  * exits, or the game does not close in time, the title restarts into the
  * launcher.
  *
@@ -244,7 +244,9 @@ enum { PW_WINE64_MAX_FRAME = 1920 * 1200 * 4, PW_WINE64_TICK_US = 16000,
 
 enum { PAD_CREATE = 0x1u, PAD_OPTIONS = 0x8u, PAD_UP = 0x10u, PAD_RIGHT = 0x20u,
        PAD_DOWN = 0x40u, PAD_LEFT = 0x80u, PAD_L1 = 0x400u, PAD_R1 = 0x800u,
-       PAD_CROSS = 0x4000u, PAD_SQUARE = 0x8000u, PAD_CLOSE = PAD_OPTIONS | PAD_CREATE };
+       PAD_CROSS = 0x4000u, PAD_SQUARE = 0x8000u, PAD_TOUCHPAD = 0x100000u,
+       /* Create is the PS5 screenshot button; Options+Touchpad does not fire it. */
+       PAD_CLOSE = PAD_OPTIONS | PAD_TOUCHPAD };
 /* The pad core needs a key map to open; the title reads raw edges and maps
  * them with the game's bindings (pw_game_profile). */
 static const PwPadKeyMap pad_open_map[] = { { PAD_CROSS, 0x20, 0, 0, "cross" } };
@@ -1443,7 +1445,7 @@ int main(int argc, char **argv)
         }
         if (!presented) usleep(PW_WINE64_TICK_US);
 
-        /* Closing: Options+Create held for a second, or the deadline, asks
+        /* Closing: Options+Touchpad held for a second, or the deadline, asks
          * the game to close with Alt+F4; Wine's exit then restarts the
          * title (on_exit_report). A game that does not close is left. */
         if (pad_status == PW_OK && (pad.core.pressed_edges & PAD_CREATE) &&
