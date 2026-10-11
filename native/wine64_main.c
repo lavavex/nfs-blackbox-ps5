@@ -656,6 +656,10 @@ static void restart_title(const PwWineApp *app, uint32_t cycle, const char *reas
     if (!app && launch.home) {
         PS5LOG_LOG("PW_WINE64 close to=home reason=%s (started from the game's tile)", reason);
         pw_diagnostics_close(reason);
+        /* Close the way a title does: a process that ends itself with
+         * _exit is a crash to the system (CE-108255-1 on every quit,
+         * measured), and its sandbox lingers until the console restarts. */
+        sceSystemServiceLoadExec("exit", NULL);
         _exit(0);
     }
     if (!pw_wine_launch_argv(app, cycle, storage, sizeof(storage), next, PW_WINE_LAUNCH_ARGS)) {
