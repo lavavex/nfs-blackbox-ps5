@@ -14,8 +14,8 @@
 #   sce_sys/   param.json with the id and name, the icon (icon0.png, 512x512),
 #              and optionally the Home-screen background: the Shell shows the BC7
 #              textures pic0.dds (tile selected) and pic1.dds (launch), 3840x2160,
-#              made by ps5-vulkan-mp's tools/prepare-assets.sh (bc7enc_rdo; build it
-#              once with make -C ../ps5-vulkan-mp assets-deps); pic0.png is kept too,
+#              made by PS5_Vulkan's tools/prepare-assets.sh (bc7enc_rdo; build it
+#              once with make -C ../PS5_Vulkan assets-deps); pic0.png is kept too,
 #              the title logo (pic2.dds: a 3840x2160 layer the Shell draws over the
 #              background, transparent but for the logo, as the console's titles have),
 #              and music (snd0.at9: ATRAC9 48 kHz stereo, as the console's own
@@ -96,19 +96,19 @@ fi
 if [[ -n $background ]]; then
     python3 -c 'import struct,sys; d=open(sys.argv[1],"rb").read(26); assert d[:8]==b"\x89PNG\r\n\x1a\n" and struct.unpack(">II",d[16:24])==(3840,2160) and d[25]==2, "background must be a 3840x2160 RGB PNG"' "$background"
     cp "$background" "$app/sce_sys/pic0.png"
-    assets=${PS5_ASSETS_TOOL:-$root/../ps5-vulkan-mp/tools/prepare-assets.sh}
-    [[ -f $assets ]] || { echo "build_game_app: no $assets (ps5-vulkan-mp)" >&2; exit 2; }
+    assets=${PS5_ASSETS_TOOL:-$root/../PS5_Vulkan/tools/prepare-assets.sh}
+    [[ -f $assets ]] || { echo "build_game_app: no $assets (PS5_Vulkan)" >&2; exit 2; }
     textures=$(mktemp -d)
     cp "$app/sce_sys/icon0.png" "$textures/"   # the tool validates its folder as a whole sce_sys
     bash "$assets" --background "$background" --output-directory "$textures" ||
-        { echo "build_game_app: background conversion failed (make -C ../ps5-vulkan-mp assets-deps?)" >&2; exit 2; }
+        { echo "build_game_app: background conversion failed (make -C ../PS5_Vulkan assets-deps?)" >&2; exit 2; }
     cp "$textures/pic0.dds" "$textures/pic1.dds" "$app/sce_sys/"
     rm -rf -- "$textures"
 fi
 if [[ -n $logo ]]; then
     python3 -c 'import struct,sys; d=open(sys.argv[1],"rb").read(26); assert d[:8]==b"\x89PNG\r\n\x1a\n" and struct.unpack(">II",d[16:24])==(3840,2160) and d[25]==6, "logo must be a 3840x2160 RGBA PNG"' "$logo"
-    bc7enc=${PS5_BC7ENC:-$root/../ps5-vulkan-mp/.deps/native/bc7enc_rdo/build/bc7enc}
-    [[ -x $bc7enc ]] || { echo "build_game_app: no $bc7enc (make -C ../ps5-vulkan-mp assets-deps)" >&2; exit 2; }
+    bc7enc=${PS5_BC7ENC:-$root/../PS5_Vulkan/.deps/native/bc7enc_rdo/build/bc7enc}
+    [[ -x $bc7enc ]] || { echo "build_game_app: no $bc7enc (make -C ../PS5_Vulkan assets-deps)" >&2; exit 2; }
     textures=$(mktemp -d)
     "$bc7enc" -q -g "$logo" "$textures/pic2.dds" >/dev/null
     # As prepare-assets.sh does for pic0/pic1: one mip level, straight alpha.
