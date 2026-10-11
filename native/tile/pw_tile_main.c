@@ -13,8 +13,11 @@
  * to address 0 calling it). So the tile writes the request to TILE_REQUEST,
  * sends its payload, tile-launch.elf (native/tile/pw_tile_launch.c), to the
  * console's payload loader on loopback port 9021, as prospero-win sends
- * lapy.elf, and closes; the payload waits for it to be gone and starts the
- * game.
+ * lapy.elf, and stays open: the payload starts the game while the tile is
+ * still the running application, which the system (and ShadowMount+, which
+ * refuses another title while an exited one awaits a same-app restart)
+ * treat as an ordinary switch from one app to the next, closing the tile.
+ * If nothing has replaced the tile after TILE_WAIT_S, it closes itself.
  *
  * Which game: /app0/tile.conf ("profile=<id>", "target=<TITLEID>",
  * "tile=<own TITLEID>"), written by tools/build_tile.sh, so one eboot serves
@@ -38,6 +41,7 @@ int sceSystemServiceLoadExec(const char *path, char *const argv[]);
 
 #define TILE_LOADER_PORT 9021
 #define TILE_TIMEOUT_US 5000000
+#define TILE_WAIT_S 30
 
 /* Where the tile reads, writes and sends. A table of pointers, kept as data:
  * it gives the image the .data.rel.ro section ps5-native-tool requires. */
@@ -152,10 +156,12 @@ int main(void)
     fclose(request);
     log_line("tile: %s asks for %s profile=%s home=1", tile, target, profile);
     if (send_payload() != 0) unlink(tile_paths[TILE_REQUEST]);
+    else
+        for (int second = 0; second < TILE_WAIT_S; second++) sleep(1);   /* the switch ends us */
+    log_line("tile: nothing replaced the tile; closing");
     if (log_file) fclose(log_file);
     /* Close the way a title does (returning from main ends in a system call
-     * the sandbox refuses: SIGSYS); the payload starts the game once the
-     * tile is gone. */
+     * the sandbox refuses: SIGSYS). */
     sceSystemServiceLoadExec("exit", NULL);
     return 0;
 }

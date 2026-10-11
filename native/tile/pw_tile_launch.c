@@ -6,9 +6,12 @@
  * sceLncUtilLaunchApp unresolved for it (the first tile jumped to address 0).
  * A payload can, as PS5_Vulkan's ps5vkctl does. So the tile writes what to
  * start to TILE_REQUEST, sends this program to the console's payload loader
- * (loopback port 9021, as prospero-win sends lapy.elf) and closes; this
- * program waits for the tile to be gone, starts the target title with
- * "profile=<id>" and "home=1", and exits.
+ * (loopback port 9021, as prospero-win sends lapy.elf) and waits; this
+ * program starts the target title with "profile=<id>" and "home=1" while
+ * the tile is still in front, so the console switches from the tile to it
+ * (ShadowMount+ refuses a launch once the previous title has exited and
+ * awaits a same-app restart: "launch mount unavailable ... Device busy"),
+ * and exits.
  *
  * Built with the PS5 payload SDK by tools/build_tile.sh. What each launch
  * call answered is appended to /data/prospero-win/logs/tile-<profile>.log.
@@ -99,13 +102,9 @@ int main(void)
     snprintf(word, sizeof(word), "profile=%s", profile);
     const char *argv[] = { word, "home=1", NULL };
 
-    /* Let the tile finish closing: one application in front at a time. */
-    for (int wait = 0; wait < 40; wait++) {
-        running_title(running, sizeof(running));
-        if (!tile[0] || strcmp(running, tile)) break;
-        usleep(100000);
-    }
-    log_line("payload: in front now: '%s'; starting %s with %s home=1", running, target, word);
+    running_title(running, sizeof(running));
+    log_line("payload: in front now: '%s' (tile %s); starting %s with %s home=1", running, tile,
+             target, word);
 
     sceUserServiceInitialize(NULL);
     int foreground = -1;
@@ -120,12 +119,10 @@ int main(void)
         { "lncUtil/login", sceLncUtilLaunchApp, login },
         { "systemService/login", sceSystemServiceLaunchApp, login },
     };
-    /* While the tile's sandbox is still being removed, ShadowMount+ cannot
-     * mount the target ("launch mount unavailable: Device busy") and the
-     * launch is refused (0x80940033): give it a moment, then keep asking. */
-    usleep(1500000);
+    /* Asked at once, while the tile runs; a refusal (0x80940033) is asked
+     * again a few times in case the console was still settling. */
     int started = 0;
-    for (int round = 1; round <= 15 && !started; round++) {
+    for (int round = 1; round <= 5 && !started; round++) {
         for (size_t i = 0; i < sizeof(attempts) / sizeof(attempts[0]) && !started; i++) {
             if (attempts[i].user_id < 0) continue;
             lnc_app_param_t param;
