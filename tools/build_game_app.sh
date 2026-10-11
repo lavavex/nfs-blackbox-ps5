@@ -16,17 +16,19 @@
 #              textures pic0.dds (tile selected) and pic1.dds (launch), 3840x2160,
 #              made by ps5-vulkan-mp's tools/prepare-assets.sh (bc7enc_rdo; build it
 #              once with make -C ../ps5-vulkan-mp assets-deps); pic0.png is kept too,
+#              the title logo (pic2.dds: a 3840x2160 layer the Shell draws over the
+#              background, transparent but for the logo, as the console's titles have),
 #              and music (snd0.at9: ATRAC9 48 kHz stereo, as the console's own
 #              titles carry; no open-source encoder exists, so it is supplied).
 #
 #   tools/build_game_app.sh --title-id PPSA99996 --name "NFS Most Wanted" \
-#       --profile nfs-most-wanted-2005 [--icon art.png] [--background bg.png] [--music snd0.at9] \
+#       --profile nfs-most-wanted-2005 [--icon art.png] [--background bg.png] [--logo logo.png] [--music snd0.at9] \
 #       --package ../release-main/PPSA99995 --out ../release-main/apps
 set -euo pipefail
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 lapy_url=https://github.com/mpereiraesaa/PS5-Lapy-JB-Daemon.git
 lapy_commit=b48b7d7236eca25c7b9dfd6c040c763ae05dde80   # v0.3.2-experimental, as build_native.sh fetches
-title_id= name= profile= icon= background= music= package= out=
+title_id= name= profile= icon= background= logo= music= package= out=
 while [[ $# -gt 0 ]]; do
     case $1 in
     --title-id) title_id=$2; shift 2 ;;
@@ -34,6 +36,7 @@ while [[ $# -gt 0 ]]; do
     --profile) profile=$2; shift 2 ;;
     --icon) icon=$2; shift 2 ;;
     --background) background=$2; shift 2 ;;
+    --logo) logo=$2; shift 2 ;;
     --music) music=$2; shift 2 ;;
     --package) package=$2; shift 2 ;;
     --out) out=$2; shift 2 ;;
@@ -100,6 +103,17 @@ if [[ -n $background ]]; then
     bash "$assets" --background "$background" --output-directory "$textures" ||
         { echo "build_game_app: background conversion failed (make -C ../ps5-vulkan-mp assets-deps?)" >&2; exit 2; }
     cp "$textures/pic0.dds" "$textures/pic1.dds" "$app/sce_sys/"
+    rm -rf -- "$textures"
+fi
+if [[ -n $logo ]]; then
+    python3 -c 'import struct,sys; d=open(sys.argv[1],"rb").read(26); assert d[:8]==b"\x89PNG\r\n\x1a\n" and struct.unpack(">II",d[16:24])==(3840,2160) and d[25]==6, "logo must be a 3840x2160 RGBA PNG"' "$logo"
+    bc7enc=${PS5_BC7ENC:-$root/../ps5-vulkan-mp/.deps/native/bc7enc_rdo/build/bc7enc}
+    [[ -x $bc7enc ]] || { echo "build_game_app: no $bc7enc (make -C ../ps5-vulkan-mp assets-deps)" >&2; exit 2; }
+    textures=$(mktemp -d)
+    "$bc7enc" -q -g "$logo" "$textures/pic2.dds" >/dev/null
+    # As prepare-assets.sh does for pic0/pic1: one mip level, straight alpha.
+    python3 -c 'import struct,sys; p=sys.argv[1]; d=bytearray(open(p,"rb").read()); assert d[84:88]==b"DX10" and struct.unpack_from("<I",d,128)[0]==98 and len(d)==148+3840*2160, "pic2.dds is not single-level 3840x2160 BC7"; struct.pack_into("<I",d,28,1); struct.pack_into("<I",d,144,1); open(p,"wb").write(d)' "$textures/pic2.dds"
+    cp "$textures/pic2.dds" "$app/sce_sys/"
     rm -rf -- "$textures"
 fi
 if [[ -n $music ]]; then

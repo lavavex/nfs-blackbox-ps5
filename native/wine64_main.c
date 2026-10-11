@@ -75,8 +75,14 @@
 #define PW_WINE64_RUNTIME "/win/wine/lib/wine/x86_64-unix"
 /* Its 64-bit PE modules, among them the WoW64 CPU backends. */
 #define PW_WINE64_PE_RUNTIME "/win/wine/lib/wine/x86_64-windows"
-#define PW_SANDBOX_APP0 "/mnt/sandbox/" PW_TITLE_ID "_000/app0"
-static const char *const runtime_roots[] = { "/app0", PW_SANDBOX_APP0 };
+/* The sandbox's view of app0 is /mnt/sandbox/<title>_NNN/app0, NNN the
+ * instance: 000 normally, but an instance that ended badly (a crash on exit)
+ * keeps 000 until the console restarts, empty, and the next launch gets 001
+ * (measured: every launch then failed with ntdll.prx not found). The first
+ * instance that holds the runtime is this one (find_sandbox_app0). */
+#define PW_SANDBOX_INSTANCES 16
+static char sandbox_app0[64] = "/mnt/sandbox/" PW_TITLE_ID "_000/app0";
+static const char *const runtime_roots[] = { "/app0", sandbox_app0 };
 /* The title's data: profiles/, input/, prefix/ and prefixes/<name>. */
 #define PW_WINE64_ROOT_DATA "/data/prospero-win"            /* when /data is granted */
 #define PW_WINE64_ROOT_SANDBOX "/download0/prospero-win"    /* sandbox fallback */
@@ -608,6 +614,26 @@ static int capture_fd(int fd, PwFdForward *forward)
     return pthread_create(&thread, NULL, forward_fd, forward) ? -4 : 0;
 }
 
+/* Point sandbox_app0 at this instance once /mnt/sandbox is visible (after
+ * the helper grants /data); before that, or if none holds the runtime, it
+ * stays at 000 and /app0 is tried first anyway. */
+static void find_sandbox_app0(void)
+{
+    static int found;
+
+    for (int i = 0; !found && i < PW_SANDBOX_INSTANCES; i++) {
+        char root[sizeof(sandbox_app0)], ntdll[sizeof(root) + sizeof(PW_WINE64_RUNTIME) + 16];
+        struct stat st;
+
+        snprintf(root, sizeof(root), "/mnt/sandbox/" PW_TITLE_ID "_%03d/app0", i);
+        snprintf(ntdll, sizeof(ntdll), "%s" PW_WINE64_RUNTIME "/ntdll.prx", root);
+        if (stat(ntdll, &st) != 0) continue;
+        snprintf(sandbox_app0, sizeof(sandbox_app0), "%s", root);
+        found = 1;
+        if (i) PS5LOG_LOG("PW_WINE64 sandbox instance=%03d (an earlier one was left behind)", i);
+    }
+}
+
 /* ---- one game per process -------------------------------------------- */
 
 static PwWineLaunch launch;
@@ -619,7 +645,11 @@ static PwWineLaunch launch;
  * instead of going to the launcher. */
 static void restart_title(const PwWineApp *app, uint32_t cycle, const char *reason)
 {
-    static const char *const eboots[] = { "/app0/eboot.bin", PW_SANDBOX_APP0 "/eboot.bin" };
+    char sandbox_eboot[sizeof(sandbox_app0) + 16];
+    const char *const eboots[] = { "/app0/eboot.bin", sandbox_eboot };
+
+    find_sandbox_app0();
+    snprintf(sandbox_eboot, sizeof(sandbox_eboot), "%s/eboot.bin", sandbox_app0);
     static char storage[2 * PW_WINE_LAUNCH_PATH_MAX + 64];
     char *next[PW_WINE_LAUNCH_ARGS];
 
@@ -982,6 +1012,7 @@ int main(int argc, char **argv)
         ps5log_close("data-helper-incomplete");
         return 1;
     }
+    find_sandbox_app0();
     (void)pw_wine_launch_parse(argc, argv, catalog, catalog_count, &launch);
     static const char autostart_profile[] = PW_AUTOSTART_PROFILE;
     if (launch.mode != PW_WINE_LAUNCH_GAME && !launch.refused && autostart_profile[0] != '\0') {
