@@ -5,7 +5,12 @@ set -euo pipefail
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 MESA_COMMIT=e4607ef697fe3df8d1ebc329bf1917d041843306
 LLVM_MINGW_VERSION=20260922-ucrt
-LLVM_MINGW_SHA256=bb7bb7654b33d5aa8712acb837c963b2e0c56352560c76105270a3268c665c21
+# The same llvm-mingw release, built for the machine doing the build:
+#   llvm-mingw-20260922-ucrt-ubuntu-22.04-x86_64.tar.xz on Linux, -macos-universal.tar.xz on macOS.
+case $(uname -s) in
+Darwin) LLVM_MINGW_SHA256=52e5f5a7b131021d0c39a37a38fa380a1da7885cd04bd61afd0cd4ecfb8bc1f3 ;;
+*) LLVM_MINGW_SHA256=bb7bb7654b33d5aa8712acb837c963b2e0c56352560c76105270a3268c665c21 ;;
+esac
 work= mesa= archive= jobs=1
 fail() { echo "build_mesa_zink: $*" >&2; exit 2; }
 while [ $# -gt 0 ]; do
