@@ -29,7 +29,9 @@ native, in the prefix's registry for the host and in the profile's
 dll_overrides for the title. Besides upstream releases, dxvk_version can name
 a custom build from https://github.com/mpereiraesaa/dxvk (2.6.2-prospero2,
 say) for a game that needs a fix upstream doesn't have; those are pinned by
-hash the same way.
+hash the same way. A build of one's own can be given as a local archive in the
+same layout, pinned by hash too: `wine: {dxvk_version: 3.1.1-mine,
+dxvk_archive: /path/dxvk-3.1.1-mine.tar.gz, dxvk_sha256: HEX}`.
 
 Usage:
     pw_install.py SCRIPT.yml --library DIR --wine PATH [--file ID=PATH ...]
@@ -323,6 +325,10 @@ class Installer:
         self.mesa_files = None
         self.dxvk = wine_section.get("dxvk", False)
         self.dxvk_version = str(wine_section.get("dxvk_version", "2.6.2"))
+        self.dxvk_archive = wine_section.get("dxvk_archive")
+        self.dxvk_sha256 = wine_section.get("dxvk_sha256")
+        if bool(self.dxvk_archive) != bool(self.dxvk_sha256):
+            raise InstallError("wine.dxvk_archive and wine.dxvk_sha256 go together")
 
     # --- variables and paths --------------------------------------------
     def expand(self, value):
@@ -608,8 +614,13 @@ class Installer:
         mode = self.graphics_mode()
         if mode != "dxvk" and not (mode == "auto" and self.dxvk):
             return []
-        url, digest = dxvk_release(self.dxvk_version)
-        archive = fetch(url, digest, f"dxvk-{self.dxvk_version}.tar.gz")
+        if self.dxvk_archive:
+            archive = Path(self.expand(str(self.dxvk_archive))).resolve()
+            if not archive.is_file() or hashlib.sha256(archive.read_bytes()).hexdigest() != self.dxvk_sha256:
+                raise InstallError(f"{archive} is missing or does not match wine.dxvk_sha256")
+        else:
+            url, digest = dxvk_release(self.dxvk_version)
+            archive = fetch(url, digest, f"dxvk-{self.dxvk_version}.tar.gz")
         env = self.wine_env()
         prefix = Path(env["WINEPREFIX"]) / "drive_c" / "windows"
         with tarfile.open(archive) as release:
