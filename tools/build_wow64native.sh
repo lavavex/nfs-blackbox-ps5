@@ -25,8 +25,17 @@ grep -q -- '--enable-archs=i386,x86_64' "$build_dir/config.log" || fail "not a W
 module=$root/wine/wow64native
 mkdir -p "$output_dir/x86_64-windows" "$output_dir/x86_64-unix"
 out=$(CDPATH= cd -- "$output_dir" && pwd)
-gcc -m64 -O2 -g -fPIC -shared -Wl,-Bsymbolic -Wl,-soname,wow64native.so \
-    -Wl,-z,defs -D__WINESRC__ -DWINE_UNIX_LIB -D_REENTRANT \
+# The Unix side matches host Wine: x86-64 Linux, or an Intel macOS build run through
+# Rosetta (Apple clang, Mach-O linker flags).
+case $(uname -s) in
+Darwin) unix_cc="/usr/bin/clang -arch x86_64"
+        unix_link="-Wl,-undefined,dynamic_lookup -Wl,-install_name,wow64native.so" ;;
+*) unix_cc="gcc -m64"
+   unix_link="-Wl,-Bsymbolic -Wl,-soname,wow64native.so -Wl,-z,defs" ;;
+esac
+# shellcheck disable=SC2086
+$unix_cc -O2 -g -fPIC -shared $unix_link \
+    -D__WINESRC__ -DWINE_UNIX_LIB -D_REENTRANT \
     -I"$module" -I"$build_dir/include" -I"$source_dir/include" \
     "$module/unix.c" "$build_dir/dlls/ntdll/ntdll.so" -o "$out/x86_64-unix/wow64native.so"
 x86_64-w64-mingw32-gcc -c -o "$out/x86_64-windows/cpu.o" "$module/cpu.c" \
