@@ -88,9 +88,13 @@ rm -rf "$install"
 make -C "$build" install DESTDIR="$install" > "$work/install.log" 2>&1 ||
     fail "the install failed; see $work/install.log"
 lib=$install/usr/lib/wine
-find "$lib/i386-windows" -type f -exec i686-w64-mingw32-strip -s {} + 2>/dev/null || true
-find "$lib/x86_64-windows" -type f -exec x86_64-w64-mingw32-strip -s {} + 2>/dev/null || true
-find "$lib/x86_64-unix" "$install/usr/bin" -type f -exec strip --strip-unneeded {} + 2>/dev/null || true
+# One file per strip: GNU strip carries state from one PE file to the next within a run, so
+# with many files per run a DLL's bytes depend on which file came before it, and find's
+# order differs from one filesystem to another (acledit.dll and dinput.dll came out
+# different on two machines from the same build tree).
+find "$lib/i386-windows" -type f -exec i686-w64-mingw32-strip -s {} \; 2>/dev/null || true
+find "$lib/x86_64-windows" -type f -exec x86_64-w64-mingw32-strip -s {} \; 2>/dev/null || true
+find "$lib/x86_64-unix" "$install/usr/bin" -type f -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
 wine=$install/usr/bin/wine
 "$wine" --version > /dev/null || fail "the installed wine does not run"
