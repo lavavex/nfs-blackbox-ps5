@@ -656,6 +656,21 @@ static void restart_title(const PwWineApp *app, uint32_t cycle, const char *reas
     char *next[PW_WINE_LAUNCH_ARGS];
 
     if (!app && launch.home) {
+        /* A title whose eboot.bin is its own front end (the runner is another
+         * file in app0) gets it back when the game asks: the game writes
+         * <root>/return-<title> (one shot) before it quits. */
+        char request[160];
+
+        snprintf(request, sizeof(request), "%s/return-" PW_TITLE_ID, library_root);
+        if (unlink(request) == 0) {
+            for (size_t i = 0; i < sizeof(eboots) / sizeof(eboots[0]); i++) {
+                PS5LOG_LOG("PW_WINE64 close to=app reason=%s eboot=%s (the game asked)", reason, eboots[i]);
+                pw_diagnostics_close(reason);
+                int rc = sceSystemServiceLoadExec(eboots[i], NULL);
+                pw_diagnostics_resume();
+                PS5LOG_LOG("PW_WINE64 close to=app failed rc=0x%08x", (unsigned)rc);
+            }
+        }
         PS5LOG_LOG("PW_WINE64 close to=home reason=%s (started from the game's tile)", reason);
         pw_diagnostics_close(reason);
         /* Close the way a title does: a process that ends itself with
