@@ -52,6 +52,7 @@ static int valid_ops(const PwPadPs5Ops *ops)
 static void centre_analog(PwPadPs5 *pad)
 {
     pad->left_stick=pad->right_stick=(PwPadPs5Stick){0x80,0x80};pad->l2=pad->r2=0;
+    pad->touching=0;
 }
 
 int pw_pad_ps5_open(PwPadPs5 *pad,const PwPadPs5Ops *ops,
@@ -100,6 +101,11 @@ static int read_batch(PwPadPs5 *pad,PwPadSample samples[PW_PAD_PS5_BATCH])
             pad->connected_samples++;
             pad->left_stick=raw[i].left_stick;pad->right_stick=raw[i].right_stick;
             pad->l2=raw[i].l2;pad->r2=raw[i].r2;
+            pad->touching=raw[i].touch_data.fingers>0;
+            if(pad->touching){
+                pad->touch_finger=raw[i].touch_data.touch[0].finger;
+                pad->touch_x=raw[i].touch_data.touch[0].x;pad->touch_y=raw[i].touch_data.touch[0].y;
+            }
         }
         else{pad->disconnected_samples++;centre_analog(pad);}
     }

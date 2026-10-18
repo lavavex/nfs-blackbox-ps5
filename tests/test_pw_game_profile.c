@@ -325,6 +325,11 @@ static void test_presets(void)
     pw_game_input_overlay(&input, &overrides);
     assert(input.mouse_speed == 400);
 
+    /* The touchpad moves the pointer; its press is a button like any other. */
+    assert(parse(APP "[input]\nmode = xinput\nmouse = touchpad\ntouchpad = mouse_left\n", &p) == PW_OK);
+    assert(p.input.mouse == PW_GAME_STICK_TOUCHPAD && p.input.mode == PW_GAME_INPUT_XINPUT);
+    assert(parse(APP "[input]\nmouse = trackpad\n", &p) == PW_ERR_UNSUPPORTED);
+
     /* A preset holds only [input] and cannot chain another preset. */
     assert(preset("[input]\npreset = other\n", &input) == PW_ERR_MALFORMED);
     assert(preset("[display]\ndesktop = 800x600\n", &input) == PW_ERR_MALFORMED);

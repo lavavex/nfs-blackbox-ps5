@@ -40,6 +40,9 @@ typedef struct PwPadPs5 {
     /* The newest connected sample's sticks (0..255, 0x80 centred) and
      * triggers; centred and released while disconnected or intercepted. */
     PwPadPs5Stick left_stick,right_stick;uint8_t l2,r2;
+    /* The newest connected sample's first finger on the touchpad: touching, its id
+     * (new for each touch) and position (0..1919, 0..1079). */
+    uint8_t touching,touch_finger;uint16_t touch_x,touch_y;
 } PwPadPs5;
 
 int pw_pad_ps5_platform_ops(PwPadPs5Ops *);

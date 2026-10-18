@@ -126,6 +126,7 @@ static int input_field(PwGameInput *input, const uint8_t *key, size_t key_length
         if (is(v, n, "none")) input->mouse = PW_GAME_STICK_NONE;
         else if (is(v, n, "left_stick")) input->mouse = PW_GAME_STICK_LEFT;
         else if (is(v, n, "right_stick")) input->mouse = PW_GAME_STICK_RIGHT;
+        else if (is(v, n, "touchpad")) input->mouse = PW_GAME_STICK_TOUCHPAD;
         else return PW_ERR_UNSUPPORTED;
         input->set |= SET_MOUSE;
         return PW_OK;

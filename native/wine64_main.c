@@ -1411,7 +1411,24 @@ int main(int argc, char **argv)
             size_t count = pw_wine_game_inputs(&game_input, pad.core.pressed_edges,
                                                pad.core.released_edges, events,
                                                sizeof(events) / sizeof(events[0]) - 1);
-            if (game_input.mouse != PW_GAME_STICK_NONE) {
+            if (game_input.mouse == PW_GAME_STICK_TOUCHPAD) {
+                /* A finger's movement, as a laptop's touchpad: the pointer moves by
+                 * mouse_speed/1200 times twice the distance (the pad's 1920 points
+                 * across a 3840-wide game); a new touch moves nothing. */
+                static int touched;
+                static uint8_t finger;
+                static uint16_t last_x, last_y;
+                if (pad.touching && touched && pad.touch_finger == finger) {
+                    int32_t dx = ((int32_t)pad.touch_x - last_x) * 2 * (int32_t)game_input.mouse_speed / 1200;
+                    int32_t dy = ((int32_t)pad.touch_y - last_y) * 2 * (int32_t)game_input.mouse_speed / 1200;
+                    if (dx || dy)
+                        events[count++] = (PwWineInput){ PW_WINE_INPUT_MOUSE_MOVE, 0, dx, dy, 0 };
+                }
+                touched = pad.touching;
+                finger = pad.touch_finger;
+                last_x = pad.touch_x;
+                last_y = pad.touch_y;
+            } else if (game_input.mouse != PW_GAME_STICK_NONE) {
                 const PwPadPs5Stick *stick = game_input.mouse == PW_GAME_STICK_LEFT ?
                                              &pad.left_stick : &pad.right_stick;
                 count += (size_t)pw_wine_pointer_step(&pointer, stick->x, stick->y,
