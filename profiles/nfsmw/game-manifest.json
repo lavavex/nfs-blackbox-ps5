@@ -1,0 +1,1165 @@
+{
+  "console": "/data/prospero-win/prefixes/nfs-blackbox/drive_c/Games/NFSMW",
+  "baseline": "PC ~/mw-check/mw13, the full 1.3 install (GLOBAL/gameplay.bin 2105216 bytes, crc32 c5153d5a). It also contains DSOAL and GLOBAL/XtendedInputButtons.tpk; those are listed even when the console bytes match.",
+  "console_files": 3363,
+  "baseline_files": 3313,
+  "baseline_files_missing_on_console": 0,
+  "hash_note": "Every file whose path or size differed from mw13 was hashed over FTP. Files with the same path and size were hashed too when the extension was ini, dll, asi, exe, conf, cfg, off, log, json, or cur. Other same-size files were not byte-compared.",
+  "files": [
+    {
+      "path": "alsoft.ini",
+      "size": 28756,
+      "sha256": "8095d96846443b30759ba5618d0ce76e8b0ccfd8d2ec7fa971e165fae90d2f6c",
+      "status": "in-mw13-extra",
+      "mod": "DSOAL"
+    },
+    {
+      "path": "dinput8.dll",
+      "size": 5418336,
+      "sha256": "d5a059aa467a7a7127c8f6169f79fa63ff0f55986ee9eb2fd9a281bebf2aa2e6",
+      "status": "new",
+      "mod": "ASI loader"
+    },
+    {
+      "path": "dsoal-aldrv.dll",
+      "size": 1255424,
+      "sha256": "081cdc62a70536416ab140a86321540979326666bc3d3f8aa5cd51c7dc329af4",
+      "status": "in-mw13-extra",
+      "mod": "DSOAL"
+    },
+    {
+      "path": "dsound.dll",
+      "size": 291328,
+      "sha256": "592909fd14adadbb165579610b5201f864322c1f723130fd728d77fc65ea6bcb",
+      "status": "new",
+      "mod": "DSOAL"
+    },
+    {
+      "path": "dxvk.conf",
+      "size": 203,
+      "sha256": "6cc5e983a3a49a683304421f3730b76134154ac97994210466bc338575776418",
+      "status": "new",
+      "mod": "ours"
+    },
+    {
+      "path": "FRONTEND/FrontB.lzc",
+      "size": 13895352,
+      "sha256": "893306a6292faee5360c691ba598e1c564c3bc5a138ca7376d8b5cb390ee1c3c",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FRONTEND/PLATFORMS/CAR_LOT.BIN",
+      "size": 27175072,
+      "sha256": "5588a60b44d8b5fdb5ea64fa212648c26c6671c61caf6bd1bd62d7e941bdd41d",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FRONTEND/PLATFORMS/CAREER_SAFEHOUSE.BIN",
+      "size": 30793152,
+      "sha256": "e1de5ed2295ad4744d8bf3b2709356285cc04258343d106d5b66d109a6224a04",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FRONTEND/PLATFORMS/CUSTOMIZATION_SHOP.BIN",
+      "size": 23209088,
+      "sha256": "6a9b061b4725341f3b1bd648bd4a742bd046308714892572f8418d5265725381",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FRONTEND/PLATFORMS/CUSTOMIZATION_SHOP_BACKROOM.BIN",
+      "size": 23181360,
+      "sha256": "179a54f9a95af0cad4f9621276c32f8aee0210add723808ea816c418f2275446",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FRONTEND/PLATFORMS/PlatformCrib.BIN",
+      "size": 32331104,
+      "sha256": "368cdb853599ec93ea3e15325e78ed27cfcd7569e59b2d57041b7ef1e788b0ab",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/car.fx.o",
+      "size": 37244,
+      "sha256": "8f4f7ead4b758fe5d1508faf6c30fc98ac95393dc44aed953e9f0f42bdab8c4d",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/carnormalmap.fx.o",
+      "size": 33900,
+      "sha256": "3ee88c716aea66e6c4043b42916ca52e5c8fbd9911320bd443ebf4c89e13b764",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/debugPoly.fx.o",
+      "size": 6308,
+      "sha256": "266e11361d566e7da0180f44ee79fe33e8dd7da8359f6e95c88b83e7b6e8ad64",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/glassreflectshader.fx.o.off",
+      "size": 22932,
+      "sha256": "353af4c0aeb1fcba5133473d2079658f81f1d5f04dbee685459b4fb6a4cb6558",
+      "status": "new",
+      "mod": "360 pack, moved aside"
+    },
+    {
+      "path": "FX/COMPILED/grass.fx.o",
+      "size": 117040,
+      "sha256": "15b2948441d07ced7d58fd16229b654ba48d361088089e2deb68f8450583eb26",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/hdr.fx.o",
+      "size": 23084,
+      "sha256": "3bd86ef4c60a0fec44d48c1cbdc8c8be396736b83b75362e13dd0aadeb44373f",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/particles.fx.o",
+      "size": 19844,
+      "sha256": "38dc9ac67749ae4ead91c054a079afbd0941470527a70c548822fecf0557e1a4",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/shadowscreenfilter.fx.o",
+      "size": 688,
+      "sha256": "f4400ced679f56a07101b8aefbd5177873696d4721509d1ae9a095a5084cc0f3",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/shadowvolume.fx.o",
+      "size": 6648,
+      "sha256": "2468d6746b777cde99b267b5fbbede8518f487bcdfc24a41e53efe7502f8e057",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/sky.fx.o",
+      "size": 15728,
+      "sha256": "ce9fbc32e9403cbff6fa52d81a761877fbb3e7610845d6530b5e6fbc91789a0f",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/standard.fx.o",
+      "size": 10368,
+      "sha256": "a287f0ab377359487dc244d0d01c7de0114a693ce664fb842d512927475bdcd8",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/trees.fx.o",
+      "size": 19160,
+      "sha256": "9c54798a18cd7d8557dee30981df63bac01a7ea8cf5f75930515705669c189c2",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/visualtreatment.fx.o",
+      "size": 12600,
+      "sha256": "dcbf8fa0d6f8ad5e3f2df602fc5ba812346bec1d4b4c66ec4d5d0eddfb182bb2",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/waterseashader.fx.o",
+      "size": 14856,
+      "sha256": "1de277d831aebcccac6df8d68460f8a83246898a5ef97053feffedf50ed59391",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/world.fx.o",
+      "size": 25468,
+      "sha256": "8b1ebc2cefbc7becd47063b23ecab092730c03375a42cfc051eba6536dcf03ad",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/worldbone.fx.o",
+      "size": 31136,
+      "sha256": "f947e965796639cc971d3487a87d6e7a163c74f4e37348ef898635f8872c5a3d",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/worldnormalmap.fx.o",
+      "size": 37684,
+      "sha256": "225bf81d038e9ff530e2ce9ed14700cd5a443f374f51372615abac6194f9fc12",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "FX/COMPILED/worldreflect.fx.o",
+      "size": 55216,
+      "sha256": "b590d6bd15e59e848bbfc3fc4986a185f16629292d8d409cfa641b9489d8bce1",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "GLOBAL/attributes.bin",
+      "size": 649832,
+      "sha256": "ba5284400e60174c5fdca0d3dca711ca76060a0509a6e9635bd69ed00fc5e533",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "GLOBAL/DYNTEX.BIN",
+      "size": 8570880,
+      "sha256": "23eeec1923ab00ad555da6c78bd51884f59f32be23b1dc0cd743de6c024333f2",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "GLOBAL/GlobalB.lzc",
+      "size": 10339800,
+      "sha256": "46c800716026c9bda47b7e63fc301ba5b76ff6298728331e6ac11fcb4f67d70a",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "GLOBAL/GlobalMemoryFile.bin",
+      "size": 366,
+      "sha256": "da2df598dca42b3090df0d2abfc35b97dedf9030262c1a272d1100c9eee60e5f",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "GLOBAL/HUDTEXRACE.BIN",
+      "size": 157312,
+      "sha256": "fc334f5079678e5f9243249c07e4587bc3f9555faf4747bfd8b2a88fb955b4a9",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "GLOBAL/HUDTEXTURESPHOTOFINISH.BIN",
+      "size": 1986176,
+      "sha256": "c7bace62a48103e47f1eaac572bc0fd2673b5da7930aa60e6c874f758a548f52",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "GLOBAL/InGameA.bun",
+      "size": 6469376,
+      "sha256": "e4f4f889023d478acc308e408f908986ac0479c8cff4a1f2dd154364b1e29a04",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "GLOBAL/InGameB.lzc",
+      "size": 2507864,
+      "sha256": "b54d27f5325587071579f3189b47f85557e981fa7a9a0312da85705888cd236b",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "GLOBAL/XtendedInputButtons.tpk",
+      "size": 4231552,
+      "sha256": "135022ba63a50298fcc6ef99587d8b6b531d17d51c64cd1cc1233c96b5ffb7ff",
+      "status": "in-mw13-extra",
+      "mod": "XtendedInput"
+    },
+    {
+      "path": "MOVIES/attract_movie_english_ntsc.vp6",
+      "size": 101830228,
+      "sha256": "dc92793eeae3008caad318208f3de342f10112683dd223710e93a20d535d11c5",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_01_english_ntsc.vp6",
+      "size": 45793372,
+      "sha256": "346c7e49eea52ef0d359266161dc94f0dec42fe434bbe0d0476bfdd540ded052",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_02_english_ntsc.vp6",
+      "size": 46875384,
+      "sha256": "4fa1af16dde03573723936dad013e4e73bd8c56e3788649304d62b82a9d1dbe3",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_03_english_ntsc.vp6",
+      "size": 40141854,
+      "sha256": "f217f11bb6cff45586e7373b465b2c141368a3ec4d8ff56dcfb3bb48ac1fd07a",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_04_english_ntsc.vp6",
+      "size": 42636466,
+      "sha256": "68b03c0df0edd219ba0da0d66c2973437a3c6d6443972d302b098329a4707c42",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_05_english_ntsc.vp6",
+      "size": 44445984,
+      "sha256": "d62244f020ebf1ac8cb4e5cd0f2d4a97c0b7af7c9e91d7ffb7bc87f315337905",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_06_english_ntsc.vp6",
+      "size": 42802240,
+      "sha256": "b3b7b1fe29256051b398f30dd6046f948e10c650a95760657a83155f27fdeab2",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_07_english_ntsc.vp6",
+      "size": 45730984,
+      "sha256": "552878840cb0cc2ce642ac96c6eaaffc3044c7cf2cbb15b93c78abeea8aa9155",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_08_english_ntsc.vp6",
+      "size": 41286468,
+      "sha256": "8df45ceba5509527960489996f074b788229f517d763e2a487007eb25102bb43",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_09_english_ntsc.vp6",
+      "size": 41043524,
+      "sha256": "30aa52b432c674d609cc972ef3311bbc7b0be5466bf94cc4604815c5b156a2e4",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_10_english_ntsc.vp6",
+      "size": 43366116,
+      "sha256": "3fe6585f12c5d475b7bec262284e595de146c1ca7f01141b856870b750dea871",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_11_english_ntsc.vp6",
+      "size": 46011994,
+      "sha256": "a89bfb1f038fe5825be03d9b54b64507da250aa0efddf76dba073c78a1217b63",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_12_english_ntsc.vp6",
+      "size": 39348166,
+      "sha256": "91e6d83a59e342c84c001087c57bf23a3d08a532b6508f7ff2ee8c4fd7c6fa1e",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_13_english_ntsc.vp6",
+      "size": 38835120,
+      "sha256": "80c31b4a6990d954802a6494a6516ad11cbc3d3e0faa293c6c3555f8cb4a92c6",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_14_english_ntsc.vp6",
+      "size": 38715202,
+      "sha256": "1ebce4c27711cf255961a268f41112d051fa767ca7f8c9eff786eb551c45a104",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/blacklist_15_english_ntsc.vp6",
+      "size": 36913844,
+      "sha256": "8a92aaf67e942e6a98a08be79abc336aa910f2032705cecc4b82520e503d48d9",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/bounty_tutorial_english_ntsc.vp6",
+      "size": 19644538,
+      "sha256": "9d63958a8c1c94abbf412d46c5ef6180dd620d2bfd691efb77db7c53aea841b1",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/drag_tutorial_english_ntsc.vp6",
+      "size": 24818922,
+      "sha256": "9fe74a678d3acd8b129762984548992566ee5a741311bf6c5a8c8b5a71c1a2b6",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/eahd_bumper_english_ntsc.vp6",
+      "size": 2311654,
+      "sha256": "af93e1950a86e93f6baaafd37544e5438ba10a515693cb8806c8b132ca0f3358",
+      "status": "new",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/ealogo_english_ntsc.vp6",
+      "size": 469438,
+      "sha256": "bdc66570e5f553e67e690fd1c2cf87ed78db1928a73de4f3f72df96b37f9b26b",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/psa_english_ntsc.vp6",
+      "size": 20376190,
+      "sha256": "00aa3ce2fb979fa2775cf9964dec96576f051a21feba4bcd6eda6f164831461c",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/pursuit_tutorial_english_ntsc.vp6",
+      "size": 41555512,
+      "sha256": "cca41a4183b0b3c04872c159cf75da6d92f3719be4f0a285c9ca3f1f0e09c2f8",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/speedtrap_tutorial_english_ntsc.vp6",
+      "size": 18600654,
+      "sha256": "dc04dd33f84e445ef541bd7b8dd9ba5e7a4dcb6c2fa91ff8c7e5eaec1e3480dd",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/storyfmv_bla134_english_ntsc.vp6",
+      "size": 39246542,
+      "sha256": "32638ca75979a352bae8da828c368539c7b024afb77c82d2a3d1a36b0c45695f",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/storyfmv_bus12_english_ntsc.vp6",
+      "size": 263300154,
+      "sha256": "e0843bce8d4e255ad876c97bf668185c8fb4a7bb388f75a9ca6c0b13b6add05d",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/storyfmv_cro06_coh06a_english_ntsc.vp6",
+      "size": 310764764,
+      "sha256": "15be187aca6af90b6a841e7bed9789550f3396e1ff6b9cab35ee98614e7060bc",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/storyfmv_her136_english_ntsc.vp6",
+      "size": 155780554,
+      "sha256": "6ca72d590f71b607f16e244d74f3b11a27b08ec2c94e1be0bc19ad5dfb7d3bf5",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/storyfmv_pin11_english_ntsc.vp6",
+      "size": 61913672,
+      "sha256": "30110fc1d0b3db4f5fdedd7031854cf7fba001898d17c697e9c302be581f3956",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/storyfmv_rac01_english_ntsc.vp6",
+      "size": 68402934,
+      "sha256": "f0bfc24fa101382cfd53fce441a5e3fad785640f09f3ec6fee391fbc838df221",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/storyfmv_rap30_english_ntsc.vp6",
+      "size": 68472038,
+      "sha256": "1dafe79c6731e799757e4c1168af8f610dab1f7750cf98a50562e4a26146b947",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/storyfmv_raz08_english_ntsc.vp6",
+      "size": 220897622,
+      "sha256": "71d19f127b736e2308c98efaecd45294cf9cdefbb3b29c054201070542087a0d",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/storyfmv_saf25_english_ntsc.vp6",
+      "size": 76243324,
+      "sha256": "df5a0f4dc6b8027941a41bfcf1e428842317ad97bd631d788f8e1199a3dadd90",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "MOVIES/tollbooth_tutorial_english_ntsc.vp6",
+      "size": 18749142,
+      "sha256": "2ee7a3cae1be043a87106c84881755f9594e3aebc4b6126113bfc62e6f9b8148",
+      "status": "differs",
+      "mod": "360 Converted Movies"
+    },
+    {
+      "path": "scripts/nfs_cursor.cur",
+      "size": 16958,
+      "sha256": "ce4e795fa5285a72efcf196512b2e31d991e0296cc5461f85989e8d7ad10c49a",
+      "status": "new",
+      "mod": "XtendedInput"
+    },
+    {
+      "path": "scripts/NFS_XtendedInput.asi",
+      "size": 87552,
+      "sha256": "40e90b8bf6a76c71d2997690f2df7223cb4b49b229cd41f5c484db4c7938a8c8",
+      "status": "new",
+      "mod": "XtendedInput"
+    },
+    {
+      "path": "scripts/NFS_XtendedInput.default.ini",
+      "size": 4756,
+      "sha256": "301be2b1bc76eef1324ca28c3dc7b23e350ccfc70092c74e7468b4c2a1186ceb",
+      "status": "new",
+      "mod": "XtendedInput"
+    },
+    {
+      "path": "scripts/NFS_XtendedInput.ini",
+      "size": 2436,
+      "sha256": "089da8e83678ca3e4d68879925d5f3100da5ab86c7487d5b3acc6ba7b1fd7376",
+      "status": "new",
+      "mod": "XtendedInput"
+    },
+    {
+      "path": "scripts/NFSMostWanted.WidescreenFix.asi",
+      "size": 6694976,
+      "sha256": "f3a7f8c04db295154e10987303a7237a8dc70e2ba944d38a79f895ad1f570dd1",
+      "status": "new",
+      "mod": "Widescreen Fix"
+    },
+    {
+      "path": "scripts/NFSMostWanted.WidescreenFix.ini",
+      "size": 6666,
+      "sha256": "2dbdfd7c3c65acaff9a5839ee08845e91e990b9216765c448e2f3d02e3ca03e6",
+      "status": "new",
+      "mod": "Widescreen Fix"
+    },
+    {
+      "path": "scripts/NFSMostWanted.WidescreenFix.tpk",
+      "size": 623392,
+      "sha256": "a66fd12ebc549c4dc8b78dbc791e622d0e9065a286d698ac81a0dd15510bf904",
+      "status": "new",
+      "mod": "Widescreen Fix"
+    },
+    {
+      "path": "scripts/NFSMW_XenonEffects.asi",
+      "size": 72192,
+      "sha256": "5dcad612125be0f13426644b044a2a18874fc2d84726c033e97975e262256692",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "scripts/NFSMW_XenonEffects.ini",
+      "size": 2124,
+      "sha256": "140cb48f22406fb3acce35756d959824bb1b9561b8d0a71aebd2a0d6c646b1e0",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "scripts/NFSMWConsoleKeyboard.asi",
+      "size": 104361,
+      "sha256": "bab3fb339b5d288a5368a54def003900cba847c9fae6844396451aaea47a57a0",
+      "status": "new",
+      "mod": "ours"
+    },
+    {
+      "path": "scripts/NFSMWConsoleKeyboard.log",
+      "size": 86,
+      "sha256": "fb2e8b19845940cc65174e537b27f6e727338a4bc203754c535c0b36ea82bdb4",
+      "status": "new",
+      "mod": "ours"
+    },
+    {
+      "path": "scripts/NFSMWFEShadows.asi",
+      "size": 201728,
+      "sha256": "78cdf5df4ab50f5b29bd2b8a4f1a705053675ba97fa14e2443f852bf2ad00a4b",
+      "status": "new",
+      "mod": "Front-End Shadows"
+    },
+    {
+      "path": "scripts/NFSMWFEShadows.ini",
+      "size": 566,
+      "sha256": "319ef646a6051a7b32b12e93f706e0cd7956d163e917bb836eb4c2082e26e564",
+      "status": "new",
+      "mod": "Front-End Shadows"
+    },
+    {
+      "path": "scripts/NFSMWHDContentSupport.asi",
+      "size": 200192,
+      "sha256": "25fa5220f7efde5b0c34e8ad8832c9692a36126866c010fc6fbcb0c00dcdc7bc",
+      "status": "new",
+      "mod": "HD Content Support"
+    },
+    {
+      "path": "scripts/NFSMWHDReflections.asi",
+      "size": 257536,
+      "sha256": "bf545db63d6ea04e4f9dcfa90291224285ee39ab64034b4345c708e6c8b4ba46",
+      "status": "new",
+      "mod": "HD Reflections"
+    },
+    {
+      "path": "scripts/NFSMWHDReflections.ini",
+      "size": 3134,
+      "sha256": "50b72efbb5c0a13ae91698fee9ee93d2bf020656d5b168519e257475933ea9e7",
+      "status": "new",
+      "mod": "HD Reflections"
+    },
+    {
+      "path": "scripts/NFSMWHUDAdapter.asi",
+      "size": 75264,
+      "sha256": "ab9c6e4939ae7e2bca628d795d2478c2c11d15e2a18554f93223960b94bcd137",
+      "status": "new",
+      "mod": "HUD Adapter"
+    },
+    {
+      "path": "scripts/TexWizard.asi",
+      "size": 323072,
+      "sha256": "116e96e5e6f43941324bff8b420d9bfcfcf6a96d09e116d8c075bf4ff6f9151d",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "scripts/TexWizard.json",
+      "size": 55,
+      "sha256": "e3b0985e8df65891acc5d76a660760067691f7681be916dfc643d54a41dd5f9a",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "scripts/X360Stuff.asi",
+      "size": 402944,
+      "sha256": "70171ad75d5ccdf6032bed161fbcdad6a0799b2f7c717af6d977e3571dd185bf",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "scripts/X360Stuff.ini",
+      "size": 7263,
+      "sha256": "b518c78dd9e7f5765bb2079084028dfe9c84f29bdaf0df8b6282a9a9d6708d2b",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "scripts/X360StuffAsyncLuminance.asi",
+      "size": 16384,
+      "sha256": "d8a35fc74a2fd44bfee36c57b8c402e031f6083b904743136524316edf60a412",
+      "status": "new",
+      "mod": "ours"
+    },
+    {
+      "path": "scripts/X360StuffAsyncLuminance.log",
+      "size": 90,
+      "sha256": "9df88ef129310f033dff323a7bf412906628904d005030028cd97b25558774e9",
+      "status": "new",
+      "mod": "ours"
+    },
+    {
+      "path": "scripts/XenonEffects.tpk",
+      "size": 353152,
+      "sha256": "b7d3fe2ebdc520a650b0972eb71cf7ba0de27a6789a32501f5f8aee311008328",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "scripts/XtendedInputMaps/ARATA/NFS_XtendedInput.usermap.ini",
+      "size": 4756,
+      "sha256": "301be2b1bc76eef1324ca28c3dc7b23e350ccfc70092c74e7468b4c2a1186ceb",
+      "status": "new",
+      "mod": "XtendedInput"
+    },
+    {
+      "path": "scripts/XtendedInputMaps/NAME/NFS_XtendedInput.usermap.ini",
+      "size": 4756,
+      "sha256": "301be2b1bc76eef1324ca28c3dc7b23e350ccfc70092c74e7468b4c2a1186ceb",
+      "status": "new",
+      "mod": "XtendedInput"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Audi_S4.gin",
+      "size": 152089,
+      "sha256": "ca6b93835e0f4cd22a010d85dc1db56f6686436862061b4f620fc1b135bf14f9",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Audi_S4_DCL.gin",
+      "size": 62781,
+      "sha256": "89a0955bbaa9e49edef0bcece48d089fc619d0780847bdc0924e909ef5450ad7",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_BMW_328i_e46_DCL.gin",
+      "size": 62781,
+      "sha256": "89a0955bbaa9e49edef0bcece48d089fc619d0780847bdc0924e909ef5450ad7",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_BMW_450i_DCL.gin",
+      "size": 62781,
+      "sha256": "89a0955bbaa9e49edef0bcece48d089fc619d0780847bdc0924e909ef5450ad7",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_BMW_M3_LagSeca.gin",
+      "size": 169512,
+      "sha256": "14583ebafe43f9119fb725d6f9b0a8fbd0044ccd34159a6a39d3fdac2bde82d4",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_BMW_M3_LagSeca_V2.gin",
+      "size": 377933,
+      "sha256": "d7da8f537e88523df6b37bd5fc02d5d1c31b6552557a74c106be0e51b4eb8f88",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_BMW_M3_race.gin",
+      "size": 142405,
+      "sha256": "c089e00a94e4b9b566075200b0ba525c218bcbd0e206addf0b1c84284ebf1b6b",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_BMW_M3_race_DCL.gin",
+      "size": 62781,
+      "sha256": "89a0955bbaa9e49edef0bcece48d089fc619d0780847bdc0924e909ef5450ad7",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_BMW_M3_Silver.gin",
+      "size": 92752,
+      "sha256": "866a7268e3e13666150128c7d7e3a43c8845b8eaeac7da731de9865644d93886",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_BMW_M3_Silver_DCL.gin",
+      "size": 62781,
+      "sha256": "89a0955bbaa9e49edef0bcece48d089fc619d0780847bdc0924e909ef5450ad7",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_BMW_M3_white_DCL.gin",
+      "size": 62781,
+      "sha256": "89a0955bbaa9e49edef0bcece48d089fc619d0780847bdc0924e909ef5450ad7",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Cavel_DCL.gin",
+      "size": 50277,
+      "sha256": "6189921e0a87f90a97287bb7b37cfc8048a250c60b7586e7b54620f6035651b2",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Corv_z06_dyn.gin",
+      "size": 144090,
+      "sha256": "05d2572dc1ea0992a40a873c74cdc3d4a1e5cfecdc8a7735a17b860946c1c218",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Corvette_Z06.gin",
+      "size": 133963,
+      "sha256": "fe9b30f0e37cf58add5af2e5f43b68c78eea2af517de65b04f0325c7d2c9a161",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Corvette_Z06_DCL.gin",
+      "size": 159233,
+      "sha256": "c8a5714fc4e112fb0c2e780c4c00e01e395ad0fb0e41b191f3ba36126ff859c1",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_DB9.gin",
+      "size": 145508,
+      "sha256": "dcd222b328a5b6fb156f8b130e7395488f19fd0c9bd2b6ad28a8db34ada5e85a",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_DB9_upgrd.gin",
+      "size": 164495,
+      "sha256": "dc06b0a7095ba7c2553a6cef76ab15d87e77f4f3e80d5d955e3cbdeea0c21e3b",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_DB9_upgrd_DCL.gin",
+      "size": 167300,
+      "sha256": "6f2fb43bc0f7d1a192be3cd154d5e6561ddb0de90b73277e2b020d73ce26e39a",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Diablo.gin",
+      "size": 163346,
+      "sha256": "02d9da69316f1f31866c30dc353236bdf2532f22ce95962dafce03bb11b2f9f2",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Eclip2000_v1_CD.gin",
+      "size": 93095,
+      "sha256": "7422d3336f172623d66981c7544d5e562283427861636a7c8215321f854d33c0",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Eclipse_5Zigen.gin",
+      "size": 90679,
+      "sha256": "4a9c33180e0006f0afeea77c1eaea0f2dc4f6dd2ef8e2457e74e1afa40312f6a",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Ford_Focus2_DCL.gin",
+      "size": 31048,
+      "sha256": "8d41f04cce5c9a09f2e4bd27c7f1537458a133801a93a8b0e8cce93b29d9c95f",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_FordFocus_comp2.gin",
+      "size": 88322,
+      "sha256": "30f6403801020e8386b0f798d07ddd12ebdaf47fdd03987537b15bce55a44574",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_FordFocus_Road.gin",
+      "size": 91068,
+      "sha256": "7fc8439b45b2ae7fecb9274239ff242b8566656b2e74f635eff2088e54748a6e",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Gallardo_DCL.gin",
+      "size": 91213,
+      "sha256": "96e9953902eba1b849d1ae72ba22096bcf64ef8ef70b410bf6e30aa48dd37c8d",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_GTO_65_DCL.gin",
+      "size": 62781,
+      "sha256": "89a0955bbaa9e49edef0bcece48d089fc619d0780847bdc0924e909ef5450ad7",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Honda_Prelude.gin",
+      "size": 87956,
+      "sha256": "8c84d538c8f8ffd77aa8b1a3255eb90035f12b404375c6b278e75180928b54eb",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Honda_S2000_5zigen_DCL.gin",
+      "size": 25996,
+      "sha256": "401e24cfdd80cde19a7801f38154450fd9f1ba9c08b2e5ffe4a59b263c9d9df0",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Honda_S2000_Spugen_DCL.gin",
+      "size": 50063,
+      "sha256": "d713d9e0464e2d90fd5e623b8cfb71394afd2ea28718a817eb8d0f6d9c3c89dd",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_HondaS2000_Church.gin",
+      "size": 78582,
+      "sha256": "3c9499d38c6dfc9ba7ef1506544d0cd0e814ebd7e79b5f621f61c0aaebc985a5",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Infinit_G35_DCL.gin",
+      "size": 58193,
+      "sha256": "9a2ee6722502e9d3451414d656d6de1d16a0e56b35b72602d7396983cfd3a3bf",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Lotus_Elise.gin",
+      "size": 192612,
+      "sha256": "a08a885b27b41d8f68f7228f3d0790a23f62b48a09fd7bc9dc311f7fe5cc9725",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Mazda_RX7.gin",
+      "size": 56884,
+      "sha256": "006fb962ceb99f756411d1a5002abd94bd67fe547632610cb1173ee40c3c1a2a",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_MBZ_SL65.gin",
+      "size": 135744,
+      "sha256": "84a88ce979888181a64a3941a62ec8f50f6a0933e81725eea2d90ca65a1ff951",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Murcielago.gin",
+      "size": 154551,
+      "sha256": "fdd36e024c5dd07f9f233ab9a05cf09d5b485c6dee67a4c5966a86578315735a",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Murcielago_DCL.gin",
+      "size": 69304,
+      "sha256": "a7bf6802aaf792ce97205b0bcf81e6e1b6474cd1686fc870969f13b56faa5f0c",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Mustang_GT_A.gin",
+      "size": 364116,
+      "sha256": "4564cf586a4eccd4e333da01bedfbd87bb0c96e9bfdb6a38c07ae64eab285863",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Mustang_GT_A_DCL.gin",
+      "size": 248709,
+      "sha256": "db499a224ef31d2b6b55e7b938abad7b9c715cf0bc651982047d8c3fca79d5ca",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_MustSal_Ramp_V2_CD.gin",
+      "size": 96722,
+      "sha256": "e3ee019e70c5b1ba5f1129f4c4446ed2f9bdd91f5882388ddf008d5c5cb2d6cc",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Nascar_DCL.gin",
+      "size": 47918,
+      "sha256": "d411853ba442062506fb0d8e43d06540a894bfa33d4ff7d76f6dccb28644ca56",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Nissan_Skyline.gin",
+      "size": 87504,
+      "sha256": "fe8242385ce441a8edf0cc03e292c07619534f5ba6d420fb8b69da0beb707439",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_POR_911_RSR_orange.gin",
+      "size": 153136,
+      "sha256": "92ed23f3c2b40d922f21b27791c3745575dbbf2c9fc79682a266c3259bd24784",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_POR_911_RSR_orange_DCL.gin",
+      "size": 185617,
+      "sha256": "825cd38bbac263391ad5873c9bbd28ed1ab995f4ada192e662787575100d4c88",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_POR_928.gin",
+      "size": 135552,
+      "sha256": "3cd96df6259c6975edfc89d5fb0973b5f75458da4c19058c1e23793a218e21b5",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_POR_928_DCL.gin",
+      "size": 151672,
+      "sha256": "ce125821460885684fa2b05bf9274933c131f17aa7c9f5e5452a98f5f0078511",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_POR_928_V8.gin",
+      "size": 133055,
+      "sha256": "95bb286cf11ed8ce2256c0ce8e9daa7c3afd06dd28b1465cffe8f4701c88da24",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_POR_Carrera_GT_DCL.gin",
+      "size": 91213,
+      "sha256": "96e9953902eba1b849d1ae72ba22096bcf64ef8ef70b410bf6e30aa48dd37c8d",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_POR_DP6.gin",
+      "size": 158635,
+      "sha256": "24a365370c0f2a0998985ca9250abff32465355ba0e1ec49f8e73df05edb181a",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Protege_Ramp_Lev2_CD.gin",
+      "size": 91139,
+      "sha256": "38410bd648239deae5b058084582a14391e0bdef6569e6db0e7da7d88f22e2c9",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Protege_Ramp_V2_CD.gin",
+      "size": 93776,
+      "sha256": "ff6335fea3b75d82981354b88393bf96586c69a1aab71646bc863c9b177dc0f2",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_RX8_Ramp_v1_CD.gin",
+      "size": 95679,
+      "sha256": "525aadccdedb3e43843eb29bfe9214f169eea7e7c08b78e51b61c20bf4be085c",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Toyota_GTS.gin",
+      "size": 92530,
+      "sha256": "997b0be4866a170397ca8d3c1b81d3b31ed7969ef48f4f4959ffde2a3384675f",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_TRCK_Accel.gin",
+      "size": 136034,
+      "sha256": "56176190b075e4157130575bc5caf240f3cd339819e427d7a69716ef2932db7b",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_TRCK_Decel.gin",
+      "size": 175794,
+      "sha256": "afb1c489465446cb3501c7762ea45f100cf336bdb5b3b5dd13cdc2b47640cdc9",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_TVR_Tuscan.gin",
+      "size": 113925,
+      "sha256": "298a28aef252d31e08490ce32a252201b9cf2a7d6af5c6445134c0ffc7214019",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Viper_A.gin",
+      "size": 152976,
+      "sha256": "893cb96e562e7254151e73fe75d5dc7b2cf1b1491c978673f5d9caf8e8deabd6",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Viper_A_DCL.gin",
+      "size": 153227,
+      "sha256": "078323debb9d43ba84e440213c0b9181e69d6e6c722cd184a25b50847df9d609",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Viper_B.gin",
+      "size": 142384,
+      "sha256": "24505b69301704dca5ea59497995aa5340c3f2278084d9c32e615cab442e108d",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_Viper_B_DCL.gin",
+      "size": 86712,
+      "sha256": "fef09821e8e3c624a6e31effa371083c7f353c9f461eb2fada4672f42309ca78",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_VR6_Jetta_M3.gin",
+      "size": 106125,
+      "sha256": "ff98c09cf68c52cb2cea9a0088b432be5912f17c546ac64806f91d2135ce2830",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_VW_Scirocco.gin",
+      "size": 97763,
+      "sha256": "3a75881da2d316a3fa07614e6bee38f84ef086d1c385893b297472895b277841",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_WRX_Street_DCL.gin",
+      "size": 39808,
+      "sha256": "ef6d0388a1c4498a279700964a77de778bae218c2f725bfb0dc4c9342ba965ce",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/ENGINE/GIN_WRXSTi_Pull_09.gin",
+      "size": 77183,
+      "sha256": "b1d83695caa16b459e62342f5528e0405c39a564114d73975d6a569848534a53",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "SOUND/PFDATA/MW_Music.mus",
+      "size": 653261696,
+      "sha256": "ec3dc118582d33f6d71a2f78adf1d6739e16929ac1451f467bdead9c8ca64647",
+      "status": "differs",
+      "mod": "360 pack"
+    },
+    {
+      "path": "speed.dxvk-cache",
+      "size": 42432,
+      "sha256": "55bd1c33a9f0bfc46cbb6fc90d39fd2d3a2b34e038137461168e6c1ffb6b13a8",
+      "status": "differs",
+      "mod": "ours"
+    },
+    {
+      "path": "speed.exe",
+      "size": 6029312,
+      "sha256": "fe3e406617afd5457b51263257fca22bd93cfd29f8ec702d8b8f6c83ea93cc48",
+      "status": "differs",
+      "mod": "ours"
+    },
+    {
+      "path": "TRACKS/TexWizardX360/meta.json",
+      "size": 27338,
+      "sha256": "d116851b372dd1d275ee1f701d8e005a14b63dc38344da7a6accf85e741042f7",
+      "status": "new",
+      "mod": "360 pack"
+    },
+    {
+      "path": "TRACKS/TexWizardX360/textures.bin",
+      "size": 117720704,
+      "sha256": "778d8419c81c9afa5e6e698d246ec623eb688f8433df8bffec4aed270d3fd51d",
+      "status": "new",
+      "mod": "360 pack"
+    }
+  ]
+}

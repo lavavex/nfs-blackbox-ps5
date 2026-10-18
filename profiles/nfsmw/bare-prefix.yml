@@ -1,0 +1,18 @@
+# Creates an empty shared prefix and nothing else. pw_install still installs
+# DXVK 2.6.2 because graphics is dxvk. Measured 2026-10-11 on build-pc with
+# prospero-win nfs-v020: the prefix is 411,566,591 bytes, 1,824 files.
+name: "bare nfs-blackbox"
+game_slug: bare-nfs-blackbox
+runner: wine
+prospero:
+  name: bare
+  prefix: nfs-blackbox
+  graphics: dxvk
+script:
+  game:
+    exe: drive_c/windows/system32/notepad.exe
+    prefix: $GAMEDIR
+  wine:
+    overrides: {}
+  installer:
+  - task: {name: create_prefix, prefix: $GAMEDIR, arch: win32}
