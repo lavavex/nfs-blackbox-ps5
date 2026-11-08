@@ -119,6 +119,10 @@ if [[ '$steps' == *' game-apps '* ]]; then
     rm -rf \$D/assets/bundle && cp -a \$L/assets/bundle \$D/assets/bundle
     rm -rf release/game-apps && mkdir -p release/game-apps && cp -a release/apps/PPSA99403 \$A
     mv \$A/eboot.bin \$A/game.bin
+    # The app's version is the launcher's (games/PPSA99403/sce_sys/param.json): the runner's
+    # param.json comes from prospero-win's template, which is always 01.000.000.
+    python3 -c 'import json,sys; v=json.load(open(sys.argv[1]))[\"contentVersion\"]; t=open(sys.argv[2]).read(); p=json.loads(t); p[\"contentVersion\"]=v; open(sys.argv[2],\"w\").write(json.dumps(p,indent=2)+(\"\n\" if t.endswith(\"\n\") else \"\"))' \
+        \$L/games/PPSA99403/sce_sys/param.json \$A/sce_sys/param.json
     cp \$D/eboot.bin \$D/store-worker.elf \$D/lapy.elf \$D/lapy-manifest.json \$A/
     # The launcher's licences go in with the runner's: a separate licenses/ beside LICENSES/
     # is one folder on a case-insensitive disk (a player unzipping on Windows or a Mac).

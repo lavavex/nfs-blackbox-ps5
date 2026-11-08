@@ -1,0 +1,80 @@
+From 85f4128940ea247e5ab881bdaa4bf90377e6791e Mon Sep 17 00:00:00 2001
+From: lavavex <27239435+lavavex@users.noreply.github.com>
+Date: Sat, 7 Nov 2026 18:06:18 -0600
+Subject: [PATCH] diagnostics: sync the session log once a second
+
+The writer only called write(), and the file was synced at session end.
+A game that hangs on close needs a hard reset (nfs-blackbox-ps5 #4, #5,
+#12), which drops whatever the page cache still held: the last seconds
+before the hang, the part those reports need. The writer thread now
+fsyncs about once a second, before a chunk rotates, and after a fault
+line. Callers still never wait for the disk.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
+---
+ docs/TELEMETRY.md       |  4 +++-
+ native/pw_diagnostics.c | 12 +++++++++++-
+ 2 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/docs/TELEMETRY.md b/docs/TELEMETRY.md
+index 48982eb..b5b54ab 100644
+--- a/docs/TELEMETRY.md
++++ b/docs/TELEMETRY.md
+@@ -55,7 +55,9 @@ A session keeps two chunks of at most a megabyte: when the current one is
+ full, it becomes `session-N.previous.log` (replacing the older chunk) and a new
+ one starts with the same `PW_REPORT/1` line. A writer thread saves and sends
+ buffered records every 100 ms and before every restart, so a crash loses at
+-most that much; the thread that logs a record (any game thread, through Wine's
++most that much. It also syncs the file to disk about once a second, before a
++chunk rotates and after a `fault` line, so a hang that ends in a hard reset
++keeps all but the last second; the thread that logs a record (any game thread, through Wine's
+ stderr sink) only copies it into a 512 KiB buffer and never waits for the
+ file or the network. When that buffer is full, because the disk or the
+ network fell that far behind, further records are dropped rather than waited
+diff --git a/native/pw_diagnostics.c b/native/pw_diagnostics.c
+index c8a202e..cf826c9 100644
+--- a/native/pw_diagnostics.c
++++ b/native/pw_diagnostics.c
+@@ -48,6 +48,11 @@ static uint64_t retry_interval_ns = 5000000000ull;
+ /* The space a chunk keeps for the signal path: pw_diagnostics_emergency()
+  * writes up to 164 bytes past what the writer counted. */
+ enum { PW_DIAGNOSTICS_RESERVE = 192, PW_DIAGNOSTICS_CADENCE_NS = 100000000 };
++/* write() alone leaves the records in the page cache, and a hang that ends
++ * in a hard reset loses them: the writer syncs the file about once a second,
++ * so a reset costs at most that much. */
++static const uint64_t sync_interval_ns = 1000000000ull;
++static uint64_t last_sync; /* writer thread only */
+ 
+ static int put_all(int target, const char *data, size_t length)
+ {
+@@ -89,6 +94,7 @@ static void disk_failed(int error)
+  * one starts with the identity line; records stay in order across them. */
+ static int rotate(void)
+ {
++    (void)fsync(fd);
+     close(fd); fd = -1;
+     if (rename(current, previous) != 0) { disk_failed(errno); return -1; }
+     fd = open(current, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+@@ -156,6 +162,10 @@ static void pass(void)
+     writing = 1;
+     pthread_mutex_unlock(&lock);
+     save(draining, length);
++    struct timespec clock;
++    clock_gettime(CLOCK_MONOTONIC, &clock);
++    uint64_t now = (uint64_t)clock.tv_sec * 1000000000ull + (uint64_t)clock.tv_nsec;
++    if (fd >= 0 && now - last_sync >= sync_interval_ns) { (void)fsync(fd); last_sync = now; }
+     send_records(draining, length);
+     pthread_mutex_lock(&lock);
+     writing = 0;
+@@ -395,7 +405,7 @@ void pw_diagnostics_emergency(int signal, uintptr_t address, uint64_t pc,
+     }
+     line[n++] = '\n';
+     /* write() and send() only: no lock, no allocation, no formatting library. */
+-    if (fd >= 0) { ssize_t result = write(fd, line, n); (void)result; }
++    if (fd >= 0) { ssize_t result = write(fd, line, n); (void)result; (void)fsync(fd); }
+     (void)ps5log_raw(line, n);
+ }
+ 
+-- 
+2.56.0
+
