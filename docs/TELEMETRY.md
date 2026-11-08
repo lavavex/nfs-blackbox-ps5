@@ -55,7 +55,9 @@ A session keeps two chunks of at most a megabyte: when the current one is
 full, it becomes `session-N.previous.log` (replacing the older chunk) and a new
 one starts with the same `PW_REPORT/1` line. A writer thread saves and sends
 buffered records every 100 ms and before every restart, so a crash loses at
-most that much; the thread that logs a record (any game thread, through Wine's
+most that much. It also syncs the file to disk about once a second, before a
+chunk rotates and after a `fault` line, so a hang that ends in a hard reset
+keeps all but the last second; the thread that logs a record (any game thread, through Wine's
 stderr sink) only copies it into a 512 KiB buffer and never waits for the
 file or the network. When that buffer is full, because the disk or the
 network fell that far behind, further records are dropped rather than waited

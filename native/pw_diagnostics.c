@@ -48,6 +48,11 @@ static uint64_t retry_interval_ns = 5000000000ull;
 /* The space a chunk keeps for the signal path: pw_diagnostics_emergency()
  * writes up to 164 bytes past what the writer counted. */
 enum { PW_DIAGNOSTICS_RESERVE = 192, PW_DIAGNOSTICS_CADENCE_NS = 100000000 };
+/* write() alone leaves the records in the page cache, and a hang that ends
+ * in a hard reset loses them: the writer syncs the file about once a second,
+ * so a reset costs at most that much. */
+static const uint64_t sync_interval_ns = 1000000000ull;
+static uint64_t last_sync; /* writer thread only */
 
 static int put_all(int target, const char *data, size_t length)
 {
@@ -89,6 +94,7 @@ static void disk_failed(int error)
  * one starts with the identity line; records stay in order across them. */
 static int rotate(void)
 {
+    (void)fsync(fd);
     close(fd); fd = -1;
     if (rename(current, previous) != 0) { disk_failed(errno); return -1; }
     fd = open(current, O_WRONLY | O_CREAT | O_TRUNC, 0600);
@@ -156,6 +162,10 @@ static void pass(void)
     writing = 1;
     pthread_mutex_unlock(&lock);
     save(draining, length);
+    struct timespec clock;
+    clock_gettime(CLOCK_MONOTONIC, &clock);
+    uint64_t now = (uint64_t)clock.tv_sec * 1000000000ull + (uint64_t)clock.tv_nsec;
+    if (fd >= 0 && now - last_sync >= sync_interval_ns) { (void)fsync(fd); last_sync = now; }
     send_records(draining, length);
     pthread_mutex_lock(&lock);
     writing = 0;
@@ -395,7 +405,7 @@ void pw_diagnostics_emergency(int signal, uintptr_t address, uint64_t pc,
     }
     line[n++] = '\n';
     /* write() and send() only: no lock, no allocation, no formatting library. */
-    if (fd >= 0) { ssize_t result = write(fd, line, n); (void)result; }
+    if (fd >= 0) { ssize_t result = write(fd, line, n); (void)result; (void)fsync(fd); }
     (void)ps5log_raw(line, n);
 }
 
